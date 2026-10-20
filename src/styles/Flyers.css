@@ -1,0 +1,64 @@
+.back-to-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+th {
+  text-align: center;
+}
+
+.flyer-table {
+  width: 80%;
+  margin: 30px auto;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.flyer-header {
+  background-color: #ffeff7;
+  text-align: left;
+}
+
+.flyer-header th {
+  padding: 15px;
+  font-size: 18px;
+  border-bottom: 2px solid #ddd;
+}
+
+.flyer-row {
+  border-bottom: 1px solid #ddd;
+}
+
+/* .flyer-row:hover {
+  background-color: #ffeff7;
+} */
+
+.flyer-row td {
+  padding: 15px;
+  vertical-align: middle;
+}
+
+.flyer-image-cell {
+  width: 30%;
+  text-align: center;
+}
+
+.flyer-image {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+.flyer-name {
+  width: 50%;
+  font-size: 16px;
+}
+
+.flyer-price {
+  width: 20%;
+  font-size: 18px;
+  font-weight: bold;
+}

@@ -1,0 +1,213 @@
+const stores = {
+  "No Frills": 2332,
+  "Food Basics": 2265,
+  "T&T Supermarket": 6373,
+  FreshCo: 2267,
+  Loblaws: 2018,
+  Costco: 2596,
+};
+
+const categories = {
+  Produce: [
+    "fruit",
+    "vegetable",
+    "apple",
+    "banana",
+    "berry",
+    "berries",
+    "lettuce",
+    "salad",
+    "tomato",
+    "potato",
+    "onion",
+    "pepper",
+    "mushroom",
+    "mango",
+    "spinach",
+    "cauliflower",
+    "broccoli",
+    "melon",
+    "squash",
+    "pomegranate",
+    "cherry",
+    "cherries",
+    "corn",
+    "cucumbers",
+    "cabbage",
+    "coconut",
+    "papaya",
+    "garlic",
+    "romaine",
+    "kale",
+    "avocado",
+    "grape",
+    "orange",
+    "lemon",
+  ],
+
+  "Meat & Seafood": [
+    "beef",
+    "steak",
+    "chicken",
+    "pork",
+    "turkey",
+    "sausage",
+    "bacon",
+    "ham",
+    "fish",
+    "salmon",
+    "shrimp",
+    "seafood",
+    "meat",
+    "eel",
+    "duck",
+    "fillet",
+  ],
+
+  "Dairy & Eggs": [
+    "milk",
+    "cheese",
+    "butter",
+    "yogurt",
+    "cream",
+    "egg",
+    "cottage",
+    "dairy",
+    "margarine",
+  ],
+
+  Bakery: [
+    "bread",
+    "bun",
+    "roll",
+    "bagel",
+    "cake",
+    "cookie",
+    "muffin",
+    "pastry",
+    "danish",
+    "pie",
+    "bakery",
+  ],
+
+  Frozen: [
+    "frozen",
+    "ice cream",
+    "popsicle",
+    "frozen meal",
+    "frozen pizza",
+    "freeze",
+  ],
+
+  "Pantry & Staples": [
+    "rice",
+    "pasta",
+    "noodle",
+    "flour",
+    "sugar",
+    "cereal",
+    "oats",
+    "canned",
+    "beans",
+    "soup",
+    "anise",
+    "spice",
+  ],
+  
+
+  "Snacks & Candy": [
+    "chips",
+    "cracker",
+    "cookie",
+    "chocolate",
+    "candy",
+    "popcorn",
+    "snack",
+    "pistachios",
+  ],
+
+  Beverages: [
+    "juice",
+    "pop",
+    "soda",
+    "coffee",
+    "tea",
+    "water",
+    "drink",
+    "beverage",
+  ],
+
+  "Sauces & Condiments": [
+    "sauce",
+    "ketchup",
+    "mustard",
+    "mayonnaise",
+    "dressing",
+    "dip",
+    "spice",
+    "oil",
+    "vinegar",
+    "mayo",
+  ],
+
+  "Ready Made Meals": [
+    "prepared",
+    "ready",
+    "meal kit",
+    "sandwich",
+    "wrap",
+    "pizza",
+  ],
+
+  "Breakfast Foods": ["cereal", "granola", "oatmeal", "pancake", "waffle"],
+
+  "Health & Wellness": [
+    "vitamin",
+    "supplement",
+    "protein",
+    "organic",
+    "gluten",
+  ],
+
+  "Household Supplies": [
+    "paper towel",
+    "toilet paper",
+    "tissue",
+    "garbage bag",
+    "cleaner",
+    "detergent",
+    "laundry",
+    "dishwashing",
+  ],
+
+  "Personal Care": [
+    "shampoo",
+    "conditioner",
+    "soap",
+    "toothpaste",
+    "deodorant",
+    "razor",
+  ],
+
+  Baby: ["diaper", "formula", "baby", "wipes"],
+
+  Pets: ["dog", "cat", "pet", "kibble", "treat"],
+
+  Alcohol: ["beer", "wine", "vodka", "liquor"],
+
+  "International Foods": [
+    "asia",
+    "mexican",
+    "italian",
+    "indian",
+    "tortilla",
+    "kimchi",
+  ],
+
+  Other: [],
+};
+
+module.exports = {
+  stores,
+  categories,
+};
