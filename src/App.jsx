@@ -1,5 +1,3 @@
-import { useState } from "react";
-import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./styles/App.css";
 import "./styles/global.css";

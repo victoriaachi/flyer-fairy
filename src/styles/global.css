@@ -1,24 +1,85 @@
-table,
-th,
-td {
-  border: 1px solid black;
+/* Flyer Fairy theme: soft pinks and lavender, rounded everything. */
+:root {
+  --pink-50: #fff7fb;
+  --pink-100: #ffeef5;
+  --pink-200: #ffd6e6;
+  --pink-300: #ffb5cf;
+  --pink-400: #ff8fb8;
+  --pink-500: #f0679c;
+  --pink-600: #d6497f;
+  --lavender-100: #f3ecff;
+  --lavender-300: #d9c6ff;
+  --ink: #5a3550;
+  --ink-soft: #8b6a80;
+  --card: rgba(255, 255, 255, 0.82);
+  --card-border: rgba(255, 181, 207, 0.6);
+  --shadow-soft: 0 8px 24px rgba(214, 73, 127, 0.12);
+  --shadow-lift: 0 14px 32px rgba(214, 73, 127, 0.2);
+  --font-body: "Quicksand", system-ui, sans-serif;
+  --font-title: "Pacifico", cursive;
+
+  /* The app is designed light-only; don't let the OS flip it to dark. */
+  color-scheme: light;
+  color: var(--ink);
+  font-family: var(--font-body);
 }
 
 body {
-  background-color: #ffe3eb;
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--pink-100);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 78% 8%, rgba(255, 255, 255, 0.8) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 88% 62%, rgba(255, 255, 255, 0.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 30% 80%, rgba(255, 255, 255, 0.7) 0 1.5px, transparent 2.5px),
+    linear-gradient(160deg, #ffe3ee 0%, #fbe8ff 55%, #eaf0ff 100%);
+  background-size: 420px 420px, 380px 380px, 460px 460px, 340px 340px, 100% 100%;
+  background-attachment: fixed;
+}
+
+#root {
+  width: 1100px;
+  max-width: 100%;
+  border-inline: none;
+  padding: 0 16px 80px;
+  box-sizing: border-box;
+}
+
+h1,
+h2 {
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: normal;
 }
 
 button {
-  background-color: #fff5fa;
-  color: rgb(255, 119, 165);
+  font-family: inherit;
+  background-color: var(--pink-50);
+  color: var(--pink-500);
   padding: 10px 20px;
-  margin-left: 10px;
-  border: 2px solid #ffb6c1;
-  border-radius: 15px;
+  border: 2px solid var(--pink-300);
+  border-radius: 999px;
+  font-weight: 600;
   cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    transform 0.15s,
+    box-shadow 0.2s;
 }
 
 button:hover {
-  background-color: rgb(255, 119, 165);
-  color: #fff5fa;
+  background-color: var(--pink-400);
+  border-color: var(--pink-400);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--lavender-300);
+  outline-offset: 2px;
 }
