@@ -2,7 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const { stores, categories } = require("./data/data");
-const { findNearestStore, mapsSearchUrl } = require("./location");
+const {
+  findNearestStore,
+  findNearestStores,
+  geocodePostalCode,
+  mapsSearchUrl,
+} = require("./location");
+
+// The stores the app shows buttons for.
+const STORE_NAMES = ["No Frills", "T&T Supermarket", "FreshCo", "Loblaws", "Costco"];
 
 const app = express();
 
@@ -19,8 +27,10 @@ app.get("/api/test", (req, res) => {
 });
 
 const DEFAULT_POSTAL_CODE = "L3R3G7";
-// Canadian postal code, e.g. "L3R 3G7" or "l3r3g7"
-const POSTAL_CODE_RE = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+// Canadian postal code, e.g. "L3R 3G7" or "l3r3g7". Canada never uses D, F, I,
+// O, Q or U, and W/Z never start a code.
+const POSTAL_CODE_RE =
+  /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i;
 
 function normalizePostalCode(raw) {
   if (!raw) return DEFAULT_POSTAL_CODE;
@@ -179,6 +189,48 @@ function pickWeeklyFlyer(flyers) {
     return 0;
   })[0];
 }
+
+// Quick check that a postal code is real, so the page can say so while the
+// user is still typing. Returns the city to show as confirmation.
+app.get("/api/postal/:code", async (req, res) => {
+  const postalCode = normalizePostalCode(req.params.code);
+  if (!postalCode) {
+    return res.status(400).json({ valid: false, error: "That doesn't look like a Canadian postal code." });
+  }
+  try {
+    const point = await geocodePostalCode(postalCode);
+    res.json({ valid: true, postalCode, city: point.city, province: point.province });
+  } catch (error) {
+    if (error.code === "UNKNOWN_POSTAL_CODE") {
+      return res.status(404).json({ valid: false, error: "We couldn't find that postal code." });
+    }
+    console.log("postal check failed:", error.message);
+    // The geocoder itself is down; don't block the user over it.
+    res.json({ valid: true, postalCode, city: null, unverified: true });
+  }
+});
+
+// Nearest branch of every store at once. The page calls this as soon as a
+// valid postal code is entered, so locations are ready before any click.
+app.get("/api/locations", async (req, res) => {
+  const postalCode = normalizePostalCode(req.query.postal);
+  if (!postalCode) {
+    return res.status(400).json({ error: "Invalid postal code" });
+  }
+  try {
+    res.json({ postalCode, stores: await findNearestStores(STORE_NAMES, postalCode) });
+  } catch (error) {
+    console.log("locations lookup failed:", error.message);
+    // Fall back to a Google Maps search per store so the page still has links.
+    const stores = Object.fromEntries(
+      STORE_NAMES.map((store) => [
+        store,
+        { found: false, mapsUrl: mapsSearchUrl(`${store} near ${postalCode}`) },
+      ])
+    );
+    res.json({ postalCode, stores, error: "Couldn't locate stores right now" });
+  }
+});
 
 // Separate from /api/flyers because the map lookup can be slow; the page shows
 // the flyer right away and fills in the store location when this returns.

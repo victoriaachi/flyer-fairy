@@ -46,10 +46,15 @@ async function geocodePostalCode(postalCode) {
   });
   const lat = Number(res.data.latt);
   const lon = Number(res.data.longt);
-  if (!Number.isFinite(lat) || !Number.isFinite(lon) || res.data.error) {
-    throw new Error(`Could not geocode ${postalCode}`);
+  const province = res.data.standard?.prov;
+  // geocoder.ca guesses something even for made-up codes (X0X0X0 comes back
+  // in Wisconsin), but those guesses have no province, so use that to reject.
+  if (!Number.isFinite(lat) || !Number.isFinite(lon) || res.data.error || !province) {
+    const error = new Error(`Unknown postal code ${postalCode}`);
+    error.code = "UNKNOWN_POSTAL_CODE";
+    throw error;
   }
-  const point = { lat, lon, city: res.data.standard?.city };
+  const point = { lat, lon, city: res.data.standard?.city, province };
   geocodeCache.set(postalCode, point);
   return point;
 }
@@ -187,4 +192,20 @@ async function findNearestStore(storeName, postalCode) {
   };
 }
 
-module.exports = { findNearestStore, mapsSearchUrl };
+// Nearest branch of every chain at once. Runs one after another so the
+// Nominatim address lookups stay under its 1-request-per-second limit; after
+// the first chain, the Overpass data is already cached so the rest are quick.
+async function findNearestStores(storeNames, postalCode) {
+  const results = {};
+  for (const storeName of storeNames) {
+    results[storeName] = await findNearestStore(storeName, postalCode);
+  }
+  return results;
+}
+
+module.exports = {
+  findNearestStore,
+  findNearestStores,
+  geocodePostalCode,
+  mapsSearchUrl,
+};

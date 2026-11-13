@@ -8,15 +8,13 @@ function Home() {
   return (
     <main className="home">
       <div className="home-card">
-        <div className="home-fairy" aria-hidden="true">
-          🧚
-        </div>
+        <p className="home-eyebrow">Weekly grocery deals</p>
         <h1 className="home-title">Flyer Fairy</h1>
         <p className="home-tagline">
-          This week's grocery deals near you, sorted and sprinkled with magic ✨
+          Every flyer near you, sorted into aisles, so you can see what's worth buying this week.
         </p>
         <button className="home-cta" onClick={() => navigate("/flyers")}>
-          Unlock magical savings 💖
+          Browse this week's flyers
         </button>
       </div>
     </main>

@@ -1,40 +1,33 @@
-/* Flyer Fairy theme: soft pinks and lavender, rounded everything. */
+/* Flyer Fairy theme: ivory, blush and dusty rose. Quiet and refined. */
 :root {
-  --pink-50: #fff7fb;
-  --pink-100: #ffeef5;
-  --pink-200: #ffd6e6;
-  --pink-300: #ffb5cf;
-  --pink-400: #ff8fb8;
-  --pink-500: #f0679c;
-  --pink-600: #d6497f;
-  --lavender-100: #f3ecff;
-  --lavender-300: #d9c6ff;
-  --ink: #5a3550;
-  --ink-soft: #8b6a80;
-  --card: rgba(255, 255, 255, 0.82);
-  --card-border: rgba(255, 181, 207, 0.6);
-  --shadow-soft: 0 8px 24px rgba(214, 73, 127, 0.12);
-  --shadow-lift: 0 14px 32px rgba(214, 73, 127, 0.2);
-  --font-body: "Quicksand", system-ui, sans-serif;
-  --font-title: "Pacifico", cursive;
+  --ivory: #fcf8f5;
+  --blush-50: #faf3f0;
+  --blush-100: #f4e6e1;
+  --blush-200: #e9d2cb;
+  --rose-300: #d4aba5;
+  --rose-500: #a86b6e;
+  --rose-600: #8e5559;
+  --ink: #3b2f30;
+  --ink-soft: #7d6c6c;
+  --line: #e6d6d0;
+  --card: #fffdfb;
+  --shadow-soft: 0 1px 2px rgba(59, 47, 48, 0.04), 0 8px 24px rgba(59, 47, 48, 0.05);
+  --shadow-lift: 0 2px 4px rgba(59, 47, 48, 0.05), 0 14px 32px rgba(59, 47, 48, 0.09);
+  --font-body: "Jost", "Helvetica Neue", Arial, sans-serif;
+  --font-title: "Cormorant Garamond", Georgia, serif;
 
   /* The app is designed light-only; don't let the OS flip it to dark. */
   color-scheme: light;
   color: var(--ink);
   font-family: var(--font-body);
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: var(--pink-100);
-  background-image:
-    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.9) 0 2px, transparent 3px),
-    radial-gradient(circle at 78% 8%, rgba(255, 255, 255, 0.8) 0 1.5px, transparent 2.5px),
-    radial-gradient(circle at 88% 62%, rgba(255, 255, 255, 0.9) 0 2px, transparent 3px),
-    radial-gradient(circle at 30% 80%, rgba(255, 255, 255, 0.7) 0 1.5px, transparent 2.5px),
-    linear-gradient(160deg, #ffe3ee 0%, #fbe8ff 55%, #eaf0ff 100%);
-  background-size: 420px 420px, 380px 380px, 460px 460px, 340px 340px, 100% 100%;
+  background: linear-gradient(180deg, #f7ebe7 0%, var(--ivory) 420px);
   background-attachment: fixed;
 }
 
@@ -48,38 +41,37 @@ body {
 
 h1,
 h2 {
+  font-family: var(--font-title);
   color: var(--ink);
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: normal;
 }
 
 button {
   font-family: inherit;
-  background-color: var(--pink-50);
-  color: var(--pink-500);
-  padding: 10px 20px;
-  border: 2px solid var(--pink-300);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  background-color: transparent;
+  color: var(--ink);
+  padding: 9px 20px;
+  border: 1px solid var(--line);
   border-radius: 999px;
-  font-weight: 600;
   cursor: pointer;
   transition:
     background-color 0.2s,
-    color 0.2s,
-    transform 0.15s,
-    box-shadow 0.2s;
+    border-color 0.2s,
+    color 0.2s;
 }
 
 button:hover {
-  background-color: var(--pink-400);
-  border-color: var(--pink-400);
-  color: white;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-soft);
+  border-color: var(--rose-500);
+  color: var(--rose-600);
 }
 
 button:focus-visible,
 input:focus-visible,
 a:focus-visible {
-  outline: 3px solid var(--lavender-300);
+  outline: 2px solid var(--rose-300);
   outline-offset: 2px;
 }

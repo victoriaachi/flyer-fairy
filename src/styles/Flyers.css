@@ -1,5 +1,5 @@
 .flyers-page {
-  max-width: 960px;
+  max-width: 920px;
   margin: 0 auto;
   text-align: center;
 }
@@ -8,45 +8,52 @@
 
 .page-header {
   position: relative;
-  padding: 36px 0 12px;
+  padding: 44px 0 8px;
 }
 
 .home-link {
   position: absolute;
-  top: 24px;
+  top: 28px;
   left: 0;
   padding: 6px 14px;
-  font-size: 14px;
-  background: var(--card);
+  font-size: 13px;
+  border-color: transparent;
+  color: var(--ink-soft);
+}
+
+.home-link:hover {
+  border-color: var(--line);
+}
+
+.page-eyebrow,
+.home-eyebrow {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--rose-500);
 }
 
 .page-title {
   font-family: var(--font-title);
-  font-weight: 400;
-  font-size: 56px;
-  line-height: 1.2;
-  margin: 16px 0 4px;
-  color: var(--pink-500);
-  text-shadow: 3px 3px 0 var(--lavender-100);
-}
-
-.page-subtitle {
-  margin: 0;
-  font-size: 17px;
+  font-style: italic;
   font-weight: 500;
-  color: var(--ink-soft);
+  font-size: 40px;
+  line-height: 1.1;
+  margin: 0;
+  color: var(--ink);
 }
 
 /* ---------- Postal code + store picker ---------- */
 
 .controls-card {
-  margin: 20px auto 28px;
-  padding: 20px 24px;
+  margin: 28px auto 32px;
+  padding: 22px 24px;
   background: var(--card);
-  border: 2px solid var(--card-border);
-  border-radius: 28px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
   box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(6px);
 }
 
 .postal-row {
@@ -54,155 +61,69 @@
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 16px;
-  font-weight: 600;
-  color: var(--pink-600);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.postal-row label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
 }
 
 .postal-input {
   width: 110px;
-  padding: 8px 14px;
-  border: 2px solid var(--pink-300);
-  border-radius: 999px;
-  background-color: var(--pink-50);
+  padding: 8px 12px;
+  border: none;
+  border-bottom: 1px solid var(--rose-300);
+  border-radius: 0;
+  background: transparent;
   color: var(--ink);
   font-family: inherit;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 400;
   text-align: center;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.12em;
 }
 
 .postal-input:focus {
   outline: none;
-  border-color: var(--pink-500);
-  box-shadow: 0 0 0 4px var(--pink-100);
+  border-bottom-color: var(--rose-600);
 }
 
 .postal-input.invalid {
-  border-color: #e05570;
-  background-color: #fff0f2;
+  border-bottom-color: #c0504d;
+  color: #a33c3a;
 }
 
 .store-chips {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
-}
-
-.store-chip {
-  padding: 9px 18px;
-  font-size: 15px;
+  gap: 8px;
 }
 
 .store-chip.active {
-  background: linear-gradient(135deg, var(--pink-400), var(--pink-500));
-  border-color: var(--pink-500);
-  color: white;
-  box-shadow: var(--shadow-soft);
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--ivory);
+}
+
+.store-chip.active:hover {
+  color: var(--ivory);
 }
 
 /* ---------- Status messages ---------- */
 
 .loading {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--pink-500);
-  animation: float 1.6s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-.flyer-error,
-.flyer-empty {
-  display: inline-block;
-  padding: 12px 20px;
-  border-radius: 18px;
-  background: #fff0f3;
-  color: var(--pink-600);
-  font-weight: 600;
-}
-
-/* ---------- Flyer info card ---------- */
-
-.flyer-info {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 20px 24px;
-  background: var(--card);
-  border: 2px solid var(--card-border);
-  border-radius: 28px;
-  box-shadow: var(--shadow-soft);
-  text-align: left;
-}
-
-.flyer-logo {
-  width: 84px;
-  height: 84px;
-  padding: 10px;
-  box-sizing: border-box;
-  object-fit: contain;
-  flex-shrink: 0;
-  background: white;
-  border-radius: 22px;
-  border: 2px solid var(--pink-100);
-}
-
-.flyer-info-text {
-  min-width: 0;
-}
-
-.flyer-store {
-  margin: 0 0 2px;
-  font-size: 24px;
-}
-
-.flyer-week {
-  display: inline-block;
-  margin: 4px 0 6px;
-  padding: 3px 12px;
-  border-radius: 999px;
-  background: var(--lavender-100);
-  color: #7a54b8;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.flyer-location {
-  margin-top: 4px;
-}
-
-.flyer-store-name {
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.flyer-distance {
-  font-weight: 500;
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: 20px;
   color: var(--ink-soft);
-  font-size: 14px;
-}
-
-.flyer-meta {
-  font-size: 14px;
-  color: var(--ink-soft);
-  margin-top: 2px;
-}
-
-.shimmer {
-  animation: pulse 1.4s ease-in-out infinite;
+  animation: pulse 1.6s ease-in-out infinite;
 }
 
 @keyframes pulse {
@@ -211,35 +132,110 @@
   }
 }
 
+.flyer-error,
+.flyer-empty {
+  display: inline-block;
+  padding: 12px 20px;
+  border: 1px solid #ecc9c5;
+  border-radius: 12px;
+  background: #fbf0ee;
+  color: #8e3f3f;
+  font-size: 15px;
+}
+
+/* ---------- Flyer info card ---------- */
+
+.flyer-info {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 28px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+}
+
+.flyer-logo {
+  width: 76px;
+  height: 76px;
+  padding: 10px;
+  box-sizing: border-box;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: white;
+  border: 1px solid var(--blush-100);
+  border-radius: 50%;
+}
+
+.flyer-info-text {
+  min-width: 0;
+}
+
+.flyer-store {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.15;
+}
+
+.flyer-week {
+  margin: 4px 0 12px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rose-500);
+}
+
+.flyer-store-name {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.flyer-distance {
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.flyer-meta {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+
+.shimmer {
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
 .flyer-actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 12px;
+  gap: 18px;
+  margin-top: 14px;
 }
 
 .maps-link {
-  display: inline-block;
-  padding: 6px 14px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--pink-400), var(--pink-500));
-  color: white;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--rose-600);
   text-decoration: none;
-  box-shadow: var(--shadow-soft);
-  transition: transform 0.15s, box-shadow 0.2s;
+  border-bottom: 1px solid var(--rose-300);
+  padding-bottom: 1px;
+  transition: border-color 0.2s, color 0.2s;
 }
 
 .maps-link:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-lift);
+  color: var(--ink);
+  border-bottom-color: var(--ink);
 }
 
 .flyer-count {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 300;
   color: var(--ink-soft);
 }
 
@@ -247,15 +243,20 @@
 
 .search-wrap {
   position: relative;
-  margin: 24px auto 8px;
+  margin: 28px auto 8px;
 }
 
 .search-icon {
   position: absolute;
   left: 20px;
   top: 50%;
+  width: 18px;
+  height: 18px;
   transform: translateY(-50%);
-  font-size: 16px;
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 1.6;
+  stroke-linecap: round;
   pointer-events: none;
 }
 
@@ -263,27 +264,28 @@
   width: 100%;
   box-sizing: border-box;
   padding: 14px 48px 14px 50px;
-  border: 2px solid var(--card-border);
+  border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--card);
   color: var(--ink);
   font-family: inherit;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 400;
   box-shadow: var(--shadow-soft);
+  transition: border-color 0.2s;
 }
 
 .search-input::placeholder {
-  color: #c49ab3;
+  color: #b5a3a2;
+  font-weight: 300;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: var(--pink-400);
-  box-shadow: 0 0 0 4px var(--pink-100), var(--shadow-soft);
+  border-color: var(--rose-300);
 }
 
-/* Hide the browser's own clear button; we have a cuter one. */
+/* Hide the browser's own clear button; we have our own. */
 .search-input::-webkit-search-cancel-button {
   display: none;
 }
@@ -297,110 +299,98 @@
   height: 30px;
   padding: 0;
   border: none;
-  font-size: 13px;
-  background: var(--pink-100);
+  font-size: 12px;
+  color: var(--ink-soft);
 }
 
 .search-clear:hover {
-  transform: translateY(-50%);
+  background: var(--blush-50);
 }
 
 .search-summary {
-  margin: 10px 0 0;
-  font-size: 14px;
-  font-weight: 600;
+  margin: 12px 0 0;
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.04em;
   color: var(--ink-soft);
 }
 
 /* ---------- Categories ---------- */
 
 .categories {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
 }
 
 .category-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
-  padding: 14px 20px;
-  border: 2px solid var(--card-border);
-  border-radius: 20px;
-  background: var(--card);
+  padding: 18px 8px;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
   color: var(--ink);
-  font-size: 16px;
   text-align: left;
 }
 
 .category-header:hover {
-  background: white;
-  border-color: var(--pink-300);
-  color: var(--ink);
-}
-
-.category-header.open {
-  background: white;
-  border-color: var(--pink-400);
-}
-
-.category-emoji {
-  font-size: 20px;
+  color: var(--rose-600);
 }
 
 .category-name {
   flex: 1;
-  font-weight: 700;
+  font-family: var(--font-title);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
 .category-count {
-  min-width: 28px;
-  padding: 2px 10px;
-  border-radius: 999px;
-  background: var(--pink-100);
-  color: var(--pink-600);
   font-size: 13px;
-  font-weight: 700;
-  text-align: center;
+  font-weight: 300;
+  color: var(--ink-soft);
 }
 
 .category-chevron {
-  font-size: 18px;
-  line-height: 1;
-  color: var(--pink-400);
-  transition: transform 0.2s;
-  transform: translateY(-3px);
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.25s;
 }
 
 .category-header.open .category-chevron {
-  transform: rotate(180deg) translateY(-3px);
+  transform: rotate(180deg);
 }
 
 /* ---------- Item cards ---------- */
 
 .item-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 14px;
-  padding: 6px 4px 14px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 20px 0 28px;
+  border-bottom: 1px solid var(--line);
 }
 
 .item-card {
   display: flex;
   flex-direction: column;
-  padding: 12px;
-  background: white;
-  border: 2px solid var(--pink-100);
-  border-radius: 22px;
-  box-shadow: 0 4px 14px rgba(214, 73, 127, 0.08);
-  transition: transform 0.15s, box-shadow 0.2s, border-color 0.2s;
+  padding: 12px 12px 16px;
+  background: var(--card);
+  border: 1px solid var(--blush-100);
+  border-radius: 14px;
+  transition: box-shadow 0.25s, border-color 0.25s;
 }
 
 .item-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--pink-200);
+  border-color: var(--blush-200);
   box-shadow: var(--shadow-lift);
 }
 
@@ -409,8 +399,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
-  background: var(--pink-50);
+  border-radius: 10px;
+  background: white;
   overflow: hidden;
 }
 
@@ -422,21 +412,21 @@
 
 .item-name {
   flex: 1;
-  margin: 10px 2px 8px;
+  margin: 12px 2px 10px;
   font-size: 14px;
-  font-weight: 600;
-  line-height: 1.35;
+  font-weight: 400;
+  line-height: 1.4;
   text-align: left;
 }
 
 .item-price {
   align-self: flex-start;
-  padding: 4px 12px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--pink-400), var(--pink-500));
-  color: white;
-  font-size: 15px;
-  font-weight: 700;
+  margin-left: 2px;
+  font-family: var(--font-title);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--rose-600);
 }
 
 /* ---------- Back to top ---------- */
@@ -446,47 +436,49 @@
   bottom: 24px;
   right: 24px;
   z-index: 10;
-  padding: 12px 18px;
-  background: linear-gradient(135deg, var(--pink-400), var(--pink-500));
-  border-color: white;
-  color: white;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  font-size: 18px;
+  background: var(--card);
+  border-color: var(--line);
+  color: var(--ink);
   box-shadow: var(--shadow-lift);
   opacity: 0;
-  transform: translateY(16px) scale(0.9);
+  transform: translateY(12px);
   pointer-events: none;
   transition:
-    opacity 0.25s,
-    transform 0.25s;
+    opacity 0.3s,
+    transform 0.3s,
+    border-color 0.2s,
+    color 0.2s;
 }
 
 .back-to-top-btn.visible {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
   pointer-events: auto;
-}
-
-.back-to-top-btn.visible:hover {
-  transform: translateY(-2px) scale(1.03);
 }
 
 /* ---------- Phones ---------- */
 
 @media (max-width: 600px) {
   .page-header {
-    padding-top: 56px;
+    padding-top: 60px;
   }
 
   .page-title {
-    font-size: 42px;
+    font-size: 34px;
   }
 
   .controls-card {
-    padding: 16px;
+    padding: 18px 16px;
   }
 
   .flyer-info {
     flex-direction: column;
     text-align: center;
+    padding: 22px 18px;
   }
 
   .flyer-actions {
@@ -502,4 +494,44 @@
     bottom: 16px;
     right: 16px;
   }
+}
+
+/* ---------- Postal code status + distances ---------- */
+
+.postal-status {
+  margin: -6px 0 16px;
+  min-height: 1.4em;
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+}
+
+.postal-status.checking,
+.postal-status.valid {
+  color: var(--ink-soft);
+}
+
+.postal-status.invalid,
+.postal-status.unknown {
+  color: #a33c3a;
+}
+
+.postal-check {
+  color: var(--rose-500);
+  font-weight: 500;
+}
+
+.chip-distance {
+  margin-left: 8px;
+  padding-left: 8px;
+  border-left: 1px solid var(--line);
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--ink-soft);
+}
+
+.store-chip.active .chip-distance {
+  border-left-color: rgba(252, 248, 245, 0.3);
+  color: rgba(252, 248, 245, 0.75);
 }
