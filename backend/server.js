@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const axios = require("axios");
-const { stores, categories } = require("./data/data");
+const { categorizeItem, categorizeItems } = require("./categorize");
+const { getStoreDeals, getDealsByStore } = require("./flipp");
+const { searchAllStores, planBasket } = require("./compare");
 const {
   findNearestStore,
   findNearestStores,
@@ -11,13 +12,14 @@ const {
 
 // The stores the app shows buttons for.
 const STORE_NAMES = ["No Frills", "T&T Supermarket", "FreshCo", "Loblaws", "Costco"];
+const MAX_LIST_ITEMS = 30;
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 app.get("/api/test", (req, res) => {
   res.json({
@@ -39,156 +41,85 @@ function normalizePostalCode(raw) {
   return trimmed.replace(/[ -]/g, "").toUpperCase();
 }
 
-async function getCurrentFlyers(name, postalCode) {
-  let response;
-  let storeData;
-  let url = `https://dam.flippenterprise.net/api/flipp/data?locale=en&postal_code=${postalCode}&sid=7927696267820832`;
-  try {
-    response = await axios.get(url);
-    console.log("url", url);
-    // console.log(response.data);
-    // console.log("response", response.data);
-    storeData = response.data.flyers.filter((item) => item.merchant === name);
-    // console.log("storeData", storeData);
-  } catch (error) {
-    console.log("error!", error.message);
-  }
-  //   console.log("hi");
-  return storeData;
-}
-
-// Every (keyword, category) pair as a regex, longest keyword first, so the most
-// specific keyword wins: "popcorn" -> Snacks before "corn" -> Produce.
-const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const keywordMatchers = Object.entries(categories)
-  .flatMap(([category, keywords]) =>
-    keywords.map((keyword) => ({
-      category,
-      keyword,
-      // Whole words only, with optional plural: "ham" matches "HAM" and
-      // "HAMS" but not "SHAMPOO"; "potato" matches "POTATOES".
-      regex: new RegExp(
-        `(^|[^a-z])${escapeRegex(keyword.toLowerCase())}(s|es)?(?![a-z])`,
-        "i"
-      ),
-    }))
-  )
-  .sort((a, b) => b.keyword.length - a.keyword.length);
-
-function categorizeItem(name) {
-  const match = keywordMatchers.find((m) => m.regex.test(name));
-  return match ? match.category : null;
-}
-
-// nonGroceryFlyerIds: flyers Flipp doesn't tag as Groceries (toy books, home
-// & garden, holiday merch). Their unmatched items go to Home & Seasonal
-// instead of cluttering Other.
-async function categorizeItems(items, nonGroceryFlyerIds = new Set()) {
-  const categorizedItems = {};
-  for (const category of Object.keys(categories)) {
-    categorizedItems[category] = [];
-  }
-
-  for (const item of items) {
-    const price = Number(item.price);
-    if (price === 0 || price > 50) continue;
-
-    let category = categorizeItem(item.name || "");
-    if (!category) {
-      category = nonGroceryFlyerIds.has(item.flyer_id)
-        ? "Home & Seasonal"
-        : "Other";
-    }
-    categorizedItems[category].push(item);
-  }
-
-  // Drop empty categories; Other is always last (it's last in data.js).
-  return Object.fromEntries(
-    Object.entries(categorizedItems).filter(([, list]) => list.length > 0)
-  );
-}
+const INVALID_POSTAL = {
+  error: "Invalid postal code. Use a Canadian postal code like L3R 3G7.",
+};
 
 app.get("/api/flyers/:store", async (req, res) => {
-  //   console.log("req", req.params);
   const store = req.params.store;
   const postalCode = normalizePostalCode(req.query.postal);
-  if (!postalCode) {
-    return res.status(400).json({
-      error: "Invalid postal code. Use a Canadian postal code like L3R 3G7.",
-    });
-  }
-  //   console.log("stores", stores);
+  if (!postalCode) return res.status(400).json(INVALID_POSTAL);
 
-  let data = await getCurrentFlyers(store, postalCode);
-  if (!data) {
-    return res.status(502).json({ error: "Could not reach the flyer service" });
-  }
-
-  let message = [];
   try {
-    // Fetch every flyer's items at once instead of one after another.
-    const responses = await Promise.all(
-      data.map((flyer) =>
-        axios.get(
-          `https://dam.flippenterprise.net/api/flipp/flyers/${flyer.id}/flyer_items?locale=en`
-        )
-      )
+    const { flyer, items, nonGroceryFlyerIds } = await getStoreDeals(
+      store,
+      postalCode
     );
-    for (const response of responses) message.push(...response.data);
-
-    const nonGroceryFlyerIds = new Set(
-      data
-        .filter((flyer) => !(flyer.categories || []).includes("Groceries"))
-        .map((flyer) => flyer.id)
-    );
-    const categorizedResponse = await categorizeItems(
-      message,
-      nonGroceryFlyerIds
-    );
-    const primary = pickWeeklyFlyer(data);
-    const flyer = primary && {
-      merchant: primary.merchant,
-      merchantLogo: primary.merchant_logo,
-      validFrom: primary.valid_from,
-      validTo: primary.valid_to,
-      flyerCount: data.length,
-    };
     res.json({
-      message: categorizedResponse,
+      message: categorizeItems(items, nonGroceryFlyerIds),
       flyer,
       postalCode,
-      itemCount: message.length,
+      itemCount: items.length,
       success: true,
     });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({
-      error: "Failed to fetch flyers",
-    });
+    console.log("flyer fetch failed:", error.message);
+    res.status(502).json({ error: "Could not reach the flyer service" });
   }
 });
 
-// Stores like Costco and FreshCo run several flyers at once (a weekly grocery
-// flyer plus month-long holiday / general merchandise ones). The "week" we show
-// is the weekly grocery flyer: currently valid, groceries, shortest run.
-function pickWeeklyFlyer(flyers) {
-  if (!flyers.length) return null;
-  const now = Date.now();
-  const span = (f) => new Date(f.valid_to) - new Date(f.valid_from);
-  const score = (f) => [
-    new Date(f.valid_from) <= now && now <= new Date(f.valid_to) ? 0 : 1,
-    (f.categories || []).includes("Groceries") ? 0 : 1,
-    span(f),
-  ];
-  return [...flyers].sort((a, b) => {
-    const sa = score(a);
-    const sb = score(b);
-    for (let i = 0; i < sa.length; i++) {
-      if (sa[i] !== sb[i]) return sa[i] - sb[i];
+// Search every store's flyer at once, e.g. /api/search?q=salmon&postal=L3R3G7
+app.get("/api/search", async (req, res) => {
+  const postalCode = normalizePostalCode(req.query.postal);
+  if (!postalCode) return res.status(400).json(INVALID_POSTAL);
+  const query = String(req.query.q || "").trim();
+  if (!query) return res.status(400).json({ error: "Type something to search for." });
+
+  try {
+    const { dealsByStore, failed } = await getDealsByStore(STORE_NAMES, postalCode);
+    if (!Object.keys(dealsByStore).length) {
+      return res.status(502).json({ error: "Could not reach the flyer service" });
     }
-    return 0;
-  })[0];
-}
+    res.json({ query, postalCode, failed, ...searchAllStores(query, dealsByStore) });
+  } catch (error) {
+    console.log("search failed:", error.message);
+    res.status(500).json({ error: "Search failed" });
+  }
+});
+
+// The cheapest way to buy a grocery list.
+// POST { postal: "L3R3G7", items: ["eggs", "milk", "chicken thighs"],
+//        exclude: [flyer item ids to skip] }
+app.post("/api/basket", async (req, res) => {
+  const postalCode = normalizePostalCode(req.body?.postal);
+  if (!postalCode) return res.status(400).json(INVALID_POSTAL);
+  const list = Array.isArray(req.body?.items) ? req.body.items : [];
+  const terms = list.map((t) => String(t).trim()).filter(Boolean);
+  if (!terms.length) {
+    return res.status(400).json({ error: "Add at least one item to your list." });
+  }
+  if (terms.length > MAX_LIST_ITEMS) {
+    return res
+      .status(400)
+      .json({ error: `Lists can have up to ${MAX_LIST_ITEMS} items.` });
+  }
+
+  try {
+    const { dealsByStore, failed } = await getDealsByStore(STORE_NAMES, postalCode);
+    if (!Object.keys(dealsByStore).length) {
+      return res.status(502).json({ error: "Could not reach the flyer service" });
+    }
+    const exclude = Array.isArray(req.body?.exclude) ? req.body.exclude : [];
+    res.json({
+      postalCode,
+      failed,
+      ...planBasket(terms, dealsByStore, { exclude }),
+    });
+  } catch (error) {
+    console.log("basket failed:", error.message);
+    res.status(500).json({ error: "Couldn't work out your list" });
+  }
+});
 
 // Quick check that a postal code is real, so the page can say so while the
 // user is still typing. Returns the city to show as confirmation.
@@ -251,7 +182,7 @@ app.get("/api/location/:store", async (req, res) => {
   }
 });
 
-module.exports = { categorizeItem, categorizeItems };
+module.exports = { app, categorizeItem, categorizeItems };
 
 if (require.main === module) app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

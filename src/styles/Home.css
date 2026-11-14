@@ -6,51 +6,37 @@
 }
 
 .home-card {
-  max-width: 440px;
-  padding: 48px 36px;
-  background: var(--card);
+  max-width: 420px;
+  padding: 40px 36px;
+  background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 20px;
-  box-shadow: var(--shadow-lift);
-  text-align: center;
-}
-
-.home-eyebrow {
-  margin: 0 0 10px;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--rose-500);
+  border-top: 4px solid var(--pink-300);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  text-align: left;
 }
 
 .home-title {
-  font-family: var(--font-title);
-  font-style: italic;
-  font-weight: 500;
   font-size: 44px;
   line-height: 1.1;
-  margin: 0 0 14px;
-  color: var(--ink);
+  margin: 0 0 12px;
 }
 
 .home-tagline {
-  margin: 0 0 32px;
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 1.6;
+  margin: 0 0 28px;
+  font-size: 17px;
+  line-height: 1.55;
   color: var(--ink-soft);
 }
 
 .home-cta {
-  padding: 12px 28px;
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--ivory);
+  padding: 11px 22px;
+  background: var(--rose);
+  border-color: var(--rose);
+  color: white;
 }
 
 .home-cta:hover {
-  background: var(--rose-600);
-  border-color: var(--rose-600);
-  color: var(--ivory);
+  background: var(--rose-dark);
+  border-color: var(--rose-dark);
 }

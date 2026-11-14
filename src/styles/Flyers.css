@@ -1,127 +1,120 @@
 .flyers-page {
+  width: 100%;
+  min-width: 0;
   max-width: 920px;
   margin: 0 auto;
-  text-align: center;
+  text-align: left;
 }
 
 /* ---------- Header ---------- */
 
 .page-header {
-  position: relative;
-  padding: 44px 0 8px;
-}
-
-.home-link {
-  position: absolute;
-  top: 28px;
-  left: 0;
-  padding: 6px 14px;
-  font-size: 13px;
-  border-color: transparent;
-  color: var(--ink-soft);
-}
-
-.home-link:hover {
-  border-color: var(--line);
-}
-
-.page-eyebrow,
-.home-eyebrow {
-  margin: 0 0 6px;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--rose-500);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 36px 0 20px;
+  border-bottom: 1px solid var(--line);
 }
 
 .page-title {
-  font-family: var(--font-title);
-  font-style: italic;
-  font-weight: 500;
-  font-size: 40px;
-  line-height: 1.1;
   margin: 0;
-  color: var(--ink);
+  font-size: 40px;
+  line-height: 1;
+}
+
+.page-subtitle {
+  margin: 6px 0 0;
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+
+.home-link {
+  padding: 6px 12px;
+  font-size: 14px;
+  color: var(--ink-soft);
 }
 
 /* ---------- Postal code + store picker ---------- */
 
 .controls-card {
-  margin: 28px auto 32px;
-  padding: 22px 24px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  box-shadow: var(--shadow-soft);
+  margin: 24px 0 28px;
 }
 
 .postal-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 18px;
 }
 
 .postal-row label {
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
 }
 
 .postal-input {
   width: 110px;
-  padding: 8px 12px;
-  border: none;
-  border-bottom: 1px solid var(--rose-300);
-  border-radius: 0;
-  background: transparent;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
   color: var(--ink);
   font-family: inherit;
   font-size: 16px;
-  font-weight: 400;
-  text-align: center;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
 }
 
 .postal-input:focus {
   outline: none;
-  border-bottom-color: var(--rose-600);
+  border-color: var(--pink-300);
+  box-shadow: 0 0 0 3px var(--pink-100);
 }
 
 .postal-input.invalid {
-  border-bottom-color: #c0504d;
+  border-color: #d58080;
+  background: #fff7f7;
+}
+
+.postal-status {
+  margin: 8px 0 18px;
+  min-height: 1.4em;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.postal-status.invalid,
+.postal-status.unknown {
   color: #a33c3a;
 }
 
 .store-chips {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 8px;
 }
 
 .store-chip.active {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--ivory);
+  background: var(--pink-200);
+  border-color: var(--pink-300);
+  color: var(--rose-dark);
+  font-weight: 500;
 }
 
-.store-chip.active:hover {
-  color: var(--ivory);
+.chip-distance {
+  margin-left: 8px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.store-chip.active .chip-distance {
+  color: var(--rose);
 }
 
 /* ---------- Status messages ---------- */
 
 .loading {
-  font-family: var(--font-title);
-  font-style: italic;
-  font-size: 20px;
+  font-size: 15px;
   color: var(--ink-soft);
   animation: pulse 1.6s ease-in-out infinite;
 }
@@ -134,11 +127,10 @@
 
 .flyer-error,
 .flyer-empty {
-  display: inline-block;
-  padding: 12px 20px;
-  border: 1px solid #ecc9c5;
-  border-radius: 12px;
-  background: #fbf0ee;
+  padding: 12px 16px;
+  border: 1px solid #efc9c9;
+  border-radius: var(--radius);
+  background: #fdf3f3;
   color: #8e3f3f;
   font-size: 15px;
 }
@@ -147,26 +139,26 @@
 
 .flyer-info {
   display: flex;
-  align-items: center;
-  gap: 24px;
-  padding: 24px 28px;
-  background: var(--card);
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 18px;
-  box-shadow: var(--shadow-soft);
-  text-align: left;
+  border-left: 4px solid var(--pink-300);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
 }
 
 .flyer-logo {
-  width: 76px;
-  height: 76px;
-  padding: 10px;
+  width: 72px;
+  height: 72px;
+  padding: 8px;
   box-sizing: border-box;
   object-fit: contain;
   flex-shrink: 0;
   background: white;
-  border: 1px solid var(--blush-100);
-  border-radius: 50%;
+  border: 1px solid var(--pink-100);
+  border-radius: var(--radius);
 }
 
 .flyer-info-text {
@@ -176,16 +168,14 @@
 .flyer-store {
   margin: 0;
   font-size: 30px;
-  line-height: 1.15;
+  line-height: 1.1;
 }
 
 .flyer-week {
   margin: 4px 0 12px;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--rose-500);
+  color: var(--rose);
 }
 
 .flyer-store-name {
@@ -200,7 +190,6 @@
 
 .flyer-meta {
   font-size: 14px;
-  font-weight: 300;
   color: var(--ink-soft);
   margin-top: 2px;
 }
@@ -213,29 +202,28 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 18px;
+  gap: 16px;
   margin-top: 14px;
 }
 
 .maps-link {
+  display: inline-block;
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  background: var(--rose);
+  color: white;
   font-size: 14px;
   font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--rose-600);
   text-decoration: none;
-  border-bottom: 1px solid var(--rose-300);
-  padding-bottom: 1px;
-  transition: border-color 0.2s, color 0.2s;
+  transition: background-color 0.15s;
 }
 
 .maps-link:hover {
-  color: var(--ink);
-  border-bottom-color: var(--ink);
+  background: var(--rose-dark);
 }
 
 .flyer-count {
   font-size: 14px;
-  font-weight: 300;
   color: var(--ink-soft);
 }
 
@@ -243,12 +231,12 @@
 
 .search-wrap {
   position: relative;
-  margin: 28px auto 8px;
+  margin: 24px 0 8px;
 }
 
 .search-icon {
   position: absolute;
-  left: 20px;
+  left: 14px;
   top: 50%;
   width: 18px;
   height: 18px;
@@ -263,26 +251,23 @@
 .search-input {
   width: 100%;
   box-sizing: border-box;
-  padding: 14px 48px 14px 50px;
+  padding: 12px 44px 12px 42px;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--card);
+  border-radius: 8px;
+  background: var(--surface);
   color: var(--ink);
   font-family: inherit;
-  font-size: 15px;
-  font-weight: 400;
-  box-shadow: var(--shadow-soft);
-  transition: border-color 0.2s;
+  font-size: 16px;
 }
 
 .search-input::placeholder {
-  color: #b5a3a2;
-  font-weight: 300;
+  color: #b39aa2;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: var(--rose-300);
+  border-color: var(--pink-300);
+  box-shadow: 0 0 0 3px var(--pink-100);
 }
 
 /* Hide the browser's own clear button; we have our own. */
@@ -292,42 +277,40 @@
 
 .search-clear {
   position: absolute;
-  right: 10px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
   width: 30px;
   height: 30px;
   padding: 0;
   border: none;
-  font-size: 12px;
+  background: transparent;
+  font-size: 13px;
   color: var(--ink-soft);
 }
 
-.search-clear:hover {
-  background: var(--blush-50);
-}
-
 .search-summary {
-  margin: 12px 0 0;
-  font-size: 13px;
-  font-weight: 300;
-  letter-spacing: 0.04em;
+  margin: 10px 0 0;
+  font-size: 14px;
   color: var(--ink-soft);
 }
 
 /* ---------- Categories ---------- */
 
 .categories {
-  margin-top: 24px;
-  border-top: 1px solid var(--line);
+  margin-top: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .category-header {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
-  padding: 18px 8px;
+  padding: 14px 18px;
   border: none;
   border-bottom: 1px solid var(--line);
   border-radius: 0;
@@ -337,21 +320,35 @@
 }
 
 .category-header:hover {
-  color: var(--rose-600);
+  background: var(--pink-50);
+}
+
+.category-header.open {
+  background: var(--pink-100);
+}
+
+.categories > .category-header:last-of-type:not(.open) {
+  border-bottom: none;
 }
 
 .category-name {
   flex: 1;
-  font-family: var(--font-title);
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 500;
-  letter-spacing: 0;
 }
 
 .category-count {
+  min-width: 24px;
+  padding: 1px 8px;
+  border-radius: 4px;
+  background: var(--pink-100);
+  color: var(--rose-dark);
   font-size: 13px;
-  font-weight: 300;
-  color: var(--ink-soft);
+  text-align: center;
+}
+
+.category-header.open .category-count {
+  background: var(--surface);
 }
 
 .category-chevron {
@@ -359,10 +356,10 @@
   height: 18px;
   fill: none;
   stroke: var(--ink-soft);
-  stroke-width: 1.5;
+  stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
-  transition: transform 0.25s;
+  transition: transform 0.2s;
 }
 
 .category-header.open .category-chevron {
@@ -373,25 +370,25 @@
 
 .item-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
-  padding: 20px 0 28px;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+  padding: 16px;
+  background: var(--pink-50);
   border-bottom: 1px solid var(--line);
 }
 
 .item-card {
   display: flex;
   flex-direction: column;
-  padding: 12px 12px 16px;
-  background: var(--card);
-  border: 1px solid var(--blush-100);
-  border-radius: 14px;
-  transition: box-shadow 0.25s, border-color 0.25s;
+  padding: 10px 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  transition: box-shadow 0.2s;
 }
 
 .item-card:hover {
-  border-color: var(--blush-200);
-  box-shadow: var(--shadow-lift);
+  box-shadow: var(--shadow-hover);
 }
 
 .item-image-wrap {
@@ -399,7 +396,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
+  border-radius: 4px;
   background: white;
   overflow: hidden;
 }
@@ -412,21 +409,415 @@
 
 .item-name {
   flex: 1;
-  margin: 12px 2px 10px;
+  margin: 10px 0 8px;
   font-size: 14px;
-  font-weight: 400;
   line-height: 1.4;
-  text-align: left;
 }
 
 .item-price {
-  align-self: flex-start;
-  margin-left: 2px;
-  font-family: var(--font-title);
-  font-size: 22px;
+  font-size: 17px;
   font-weight: 600;
-  line-height: 1;
-  color: var(--rose-600);
+  color: var(--rose-dark);
+}
+
+/* ---------- View tabs ---------- */
+
+.view-tabs {
+  display: flex;
+  gap: 4px;
+  margin: 4px 0 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.view-tab {
+  margin-bottom: -1px;
+  padding: 10px 14px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink-soft);
+}
+
+.view-tab:hover {
+  background: transparent;
+  color: var(--ink);
+}
+
+.view-tab.active {
+  border-bottom-color: var(--rose);
+  color: var(--rose-dark);
+  font-weight: 500;
+}
+
+.text-button {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--rose);
+  font-size: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.text-button:hover {
+  background: none;
+  color: var(--rose-dark);
+}
+
+.primary-button {
+  padding: 10px 18px;
+  background: var(--rose);
+  border-color: var(--rose);
+  color: white;
+  font-weight: 500;
+}
+
+.primary-button:hover {
+  background: var(--rose-dark);
+  border-color: var(--rose-dark);
+}
+
+button:disabled,
+button:disabled:hover {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.primary-button:disabled:hover {
+  background: var(--rose);
+}
+
+.best-tag {
+  margin-left: 8px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--rose);
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: 2px;
+}
+
+/* ---------- Search all stores ---------- */
+
+.search-all .search-wrap {
+  margin-top: 0;
+}
+
+.store-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 8px;
+  margin: 16px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.store-summary li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.store-summary li.none {
+  background: transparent;
+}
+
+.store-summary-name {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.store-summary li.none .store-summary-name,
+.store-summary-detail {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.store-summary li.none .store-summary-name {
+  font-size: 15px;
+}
+
+.search-grid {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.item-store {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.item-card.best {
+  border-color: var(--pink-300);
+  box-shadow: 0 0 0 1px var(--pink-300);
+}
+
+/* ---------- Grocery list ---------- */
+
+.list-form {
+  display: flex;
+  gap: 8px;
+}
+
+.list-input {
+  padding-left: 14px;
+}
+
+.list-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list-chips li:not(.list-clear) {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 4px 4px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 15px;
+}
+
+.chip-remove {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.list-clear {
+  margin-left: 4px;
+  font-size: 14px;
+}
+
+.list-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.plan-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 10px;
+}
+
+.plan-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 14px 16px;
+  text-align: left;
+}
+
+.plan-option.selected {
+  background: var(--pink-100);
+  border-color: var(--pink-300);
+  box-shadow: inset 4px 0 0 var(--rose);
+}
+
+.plan-option-label {
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.plan-option-total {
+  font-family: var(--font-title);
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--rose-dark);
+}
+
+.plan-option-stores {
+  font-weight: 500;
+}
+
+.plan-option-meta {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.plan-picks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.plan-store {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.plan-store-name {
+  display: flex;
+  align-items: baseline;
+  margin: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.plan-store-name .flyer-distance {
+  font-size: 14px;
+}
+
+.plan-store-total {
+  margin-left: auto;
+  color: var(--rose-dark);
+}
+
+.plan-store ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plan-pick {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  grid-template-areas:
+    "img text price"
+    "img text skip";
+  align-items: center;
+  column-gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--pink-100);
+}
+
+.plan-pick:last-child {
+  border-bottom: none;
+}
+
+.plan-pick img {
+  grid-area: img;
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.plan-pick-text {
+  grid-area: text;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.plan-pick-term {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  text-transform: capitalize;
+}
+
+.plan-pick-name {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.plan-pick .item-price {
+  grid-area: price;
+  justify-self: end;
+  font-size: 15px;
+}
+
+.skip-button {
+  grid-area: skip;
+  justify-self: end;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.plan-missing {
+  margin: 12px 0 0;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.compare-title {
+  margin: 32px 0 10px;
+  font-size: 24px;
+}
+
+.compare-scroll {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.compare-table th,
+.compare-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--pink-100);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.compare-table thead th {
+  background: var(--pink-50);
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.compare-table th[scope="row"],
+.compare-table thead th:first-child {
+  text-align: left;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.compare-table td.lowest {
+  background: var(--pink-100);
+  color: var(--rose-dark);
+  font-weight: 600;
+}
+
+.compare-table tfoot th,
+.compare-table tfoot td {
+  border-bottom: none;
+  border-top: 1px solid var(--line);
+  font-weight: 500;
+  vertical-align: top;
+}
+
+.compare-covered {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-soft);
 }
 
 /* ---------- Back to top ---------- */
@@ -436,22 +827,19 @@
   bottom: 24px;
   right: 24px;
   z-index: 10;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   padding: 0;
   font-size: 18px;
-  background: var(--card);
-  border-color: var(--line);
-  color: var(--ink);
-  box-shadow: var(--shadow-lift);
+  box-shadow: var(--shadow-hover);
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(10px);
   pointer-events: none;
   transition:
-    opacity 0.3s,
-    transform 0.3s,
-    border-color 0.2s,
-    color 0.2s;
+    opacity 0.25s,
+    transform 0.25s,
+    background-color 0.15s,
+    border-color 0.15s;
 }
 
 .back-to-top-btn.visible {
@@ -464,74 +852,44 @@
 
 @media (max-width: 600px) {
   .page-header {
-    padding-top: 60px;
+    padding-top: 24px;
   }
 
   .page-title {
     font-size: 34px;
   }
 
-  .controls-card {
-    padding: 18px 16px;
-  }
-
   .flyer-info {
-    flex-direction: column;
-    text-align: center;
-    padding: 22px 18px;
+    gap: 14px;
+    padding: 16px;
   }
 
-  .flyer-actions {
-    justify-content: center;
+  .flyer-logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .flyer-store {
+    font-size: 26px;
   }
 
   .item-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+    padding: 12px;
+  }
+
+  .view-tab {
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+
+  .plan-picks {
+    grid-template-columns: 1fr;
   }
 
   .back-to-top-btn {
     bottom: 16px;
     right: 16px;
   }
-}
-
-/* ---------- Postal code status + distances ---------- */
-
-.postal-status {
-  margin: -6px 0 16px;
-  min-height: 1.4em;
-  font-size: 13px;
-  font-weight: 300;
-  letter-spacing: 0.02em;
-  color: var(--ink-soft);
-}
-
-.postal-status.checking,
-.postal-status.valid {
-  color: var(--ink-soft);
-}
-
-.postal-status.invalid,
-.postal-status.unknown {
-  color: #a33c3a;
-}
-
-.postal-check {
-  color: var(--rose-500);
-  font-weight: 500;
-}
-
-.chip-distance {
-  margin-left: 8px;
-  padding-left: 8px;
-  border-left: 1px solid var(--line);
-  font-size: 12px;
-  font-weight: 300;
-  color: var(--ink-soft);
-}
-
-.store-chip.active .chip-distance {
-  border-left-color: rgba(252, 248, 245, 0.3);
-  color: rgba(252, 248, 245, 0.75);
 }

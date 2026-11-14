@@ -1,18 +1,19 @@
-/* Flyer Fairy theme: ivory, blush and dusty rose. Quiet and refined. */
+/* Flyer Fairy theme: pastel pink with deeper rose for text and accents. */
 :root {
-  --ivory: #fcf8f5;
-  --blush-50: #faf3f0;
-  --blush-100: #f4e6e1;
-  --blush-200: #e9d2cb;
-  --rose-300: #d4aba5;
-  --rose-500: #a86b6e;
-  --rose-600: #8e5559;
-  --ink: #3b2f30;
-  --ink-soft: #7d6c6c;
-  --line: #e6d6d0;
-  --card: #fffdfb;
-  --shadow-soft: 0 1px 2px rgba(59, 47, 48, 0.04), 0 8px 24px rgba(59, 47, 48, 0.05);
-  --shadow-lift: 0 2px 4px rgba(59, 47, 48, 0.05), 0 14px 32px rgba(59, 47, 48, 0.09);
+  --bg: #fbf0f2;
+  --surface: #ffffff;
+  --pink-50: #fdf6f7;
+  --pink-100: #f9e6ea;
+  --pink-200: #f3d0d9;
+  --pink-300: #e8b0bf;
+  --rose: #b4587a;
+  --rose-dark: #96405f;
+  --ink: #3a2a30;
+  --ink-soft: #7a6168;
+  --line: #ecd6dc;
+  --shadow: 0 1px 3px rgba(58, 42, 48, 0.06);
+  --shadow-hover: 0 4px 14px rgba(58, 42, 48, 0.08);
+  --radius: 6px;
   --font-body: "Jost", "Helvetica Neue", Arial, sans-serif;
   --font-title: "Cormorant Garamond", Georgia, serif;
 
@@ -21,14 +22,12 @@
   color: var(--ink);
   font-family: var(--font-body);
   font-weight: 400;
-  letter-spacing: 0.01em;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(180deg, #f7ebe7 0%, var(--ivory) 420px);
-  background-attachment: fixed;
+  background: var(--bg);
 }
 
 #root {
@@ -43,35 +42,34 @@ h1,
 h2 {
   font-family: var(--font-title);
   color: var(--ink);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: normal;
 }
 
 button {
   font-family: inherit;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 400;
-  letter-spacing: 0.04em;
-  background-color: transparent;
+  background-color: var(--surface);
   color: var(--ink);
-  padding: 9px 20px;
+  padding: 8px 16px;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius);
   cursor: pointer;
   transition:
-    background-color 0.2s,
-    border-color 0.2s,
-    color 0.2s;
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s;
 }
 
 button:hover {
-  border-color: var(--rose-500);
-  color: var(--rose-600);
+  background-color: var(--pink-50);
+  border-color: var(--pink-300);
 }
 
 button:focus-visible,
 input:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--rose-300);
+  outline: 2px solid var(--pink-300);
   outline-offset: 2px;
 }
