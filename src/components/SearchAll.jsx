@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API, formatPrice, plural, toTitleCase } from "../lib/format";
+import { PixelLoader, Window } from "./Retro";
 
 const SUGGESTIONS = ["eggs", "chicken thigh", "salmon", "apples", "butter"];
 
@@ -46,7 +47,11 @@ export default function SearchAll({ stores, postal, ready, nearbyStores }) {
   const cheapest = data?.results[0];
 
   return (
-    <section className="search-all">
+    <Window
+      title="search_every_store.exe"
+      icon="magnifier"
+      className="search-all"
+    >
       <div className="search-wrap">
         <svg className="search-icon" viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="11" cy="11" r="7" />
@@ -91,7 +96,7 @@ export default function SearchAll({ stores, postal, ready, nearbyStores }) {
       )}
 
       {current.status === "loading" && (
-        <p className="loading">Checking every store</p>
+        <PixelLoader label="Checking every store" />
       )}
       {current.status === "error" && (
         <p className="flyer-error">{current.error}</p>
@@ -161,6 +166,6 @@ export default function SearchAll({ stores, postal, ready, nearbyStores }) {
           )}
         </>
       )}
-    </section>
+    </Window>
   );
 }

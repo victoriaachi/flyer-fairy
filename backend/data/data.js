@@ -47,6 +47,7 @@ const categories = {
   ],
 
   Frozen: [
+    "corn dog", "corn dogs",
     "frozen", "ice cream", "popsicle", "frozen meal", "frozen pizza", "freeze",
     "gelato", "sorbet", "fries", "perogies", "dumplings",
   ],
@@ -60,7 +61,7 @@ const categories = {
   ],
 
   "Snacks & Candy": [
-    "chips", "cracker", "crackers", "crispers", "bits & bites", "cookie",
+    "chips", "cracker", "crackers", "potato chips", "potato crisps", "tortilla chips", "crispers", "bits & bites", "cookie",
     "chocolate", "candy", "popcorn", "snack", "pistachios", "nuts", "almonds",
     "cashews", "pretzels", "gum", "gummies", "gummy", "bar", "granola bar",
     "protein bar", "clif bar", "shortbread", "gingerbread", "crispbread",
@@ -68,12 +69,12 @@ const categories = {
   ],
 
   Beverages: [
-    "juice", "pop", "soda", "coffee", "tea", "water", "drink", "beverage",
+    "juice", "pop", "soda", "orange juice", "apple juice", "apple cider", "smoothie", "coffee", "tea", "water", "drink", "beverage",
     "sparkling", "protein shake", "kombucha", "coca-cola", "pepsi", "gatorade", "k-cup",
   ],
 
   "Sauces & Condiments": [
-    "sauce", "ketchup", "mustard", "mayonnaise", "dressing", "dip", "oil",
+    "sauce", "ketchup", "mustard", "vegetable oil", "canola oil", "olive oil", "tomato paste", "pizza sauce", "mayonnaise", "dressing", "dip", "oil",
     "olive oil", "vinegar", "mayo", "salsa", "relish", "gravy", "soy sauce",
     "hot sauce", "syrup", "maple syrup", "pasta sauce",
   ],
@@ -131,6 +132,7 @@ const categories = {
     "gift", "gift card", "wrapping paper", "christmas", "holiday", "towel",
     "bedding", "mug", "cookware", "pan", "kitchen", "cutting board", "bows",
     "barbie", "lego", "mega bloks", "mega blocks", "planters",
+    "fruit of the loom", "socks", "underwear",
   ],
 
   Other: [],

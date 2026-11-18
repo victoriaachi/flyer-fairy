@@ -1,21 +1,36 @@
-/* Flyer Fairy theme: pastel pink with deeper rose for text and accents. */
+/* Flyer Fairy theme: strawberry matcha on a retro desktop.
+   Matcha greens for the "OS", strawberry pinks for prices and highlights. */
 :root {
-  --bg: #fbf0f2;
-  --surface: #ffffff;
-  --pink-50: #fdf6f7;
-  --pink-100: #f9e6ea;
-  --pink-200: #f3d0d9;
-  --pink-300: #e8b0bf;
-  --rose: #b4587a;
-  --rose-dark: #96405f;
-  --ink: #3a2a30;
-  --ink-soft: #7a6168;
-  --line: #ecd6dc;
-  --shadow: 0 1px 3px rgba(58, 42, 48, 0.06);
-  --shadow-hover: 0 4px 14px rgba(58, 42, 48, 0.08);
+  --bg: #f3f6ea;
+  --grid: rgba(113, 131, 85, 0.09);
+  --surface: #fffdf7;
+
+  --matcha-50: #f4f8ec;
+  --matcha-100: #e9f5db;
+  --matcha-200: #cfe1b9;
+  --matcha-300: #b5c99a;
+  --matcha-400: #97a97c;
+  --matcha-500: #87986a;
+  --matcha-600: #718355;
+  --matcha-700: #5f7046;
+
+  --berry-50: #fdf3f5;
+  --berry-100: #fbe3e9;
+  --berry-200: #f6c9d5;
+  --berry-300: #eea6b9;
+  --berry-400: #e8879f;
+  --berry-500: #d0627f;
+  --berry-600: #ad4964;
+
+  --ink: #2f3824;
+  --ink-soft: #66705a;
+  --outline: var(--matcha-700);
+  --line: #dbe6cb;
   --radius: 6px;
-  --font-body: "Jost", "Helvetica Neue", Arial, sans-serif;
-  --font-title: "Cormorant Garamond", Georgia, serif;
+
+  --font-body: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-title: "Instrument Serif", Georgia, serif;
+  --font-pixel: "Pixelify Sans", "Courier New", monospace;
 
   /* The app is designed light-only; don't let the OS flip it to dark. */
   color-scheme: light;
@@ -27,10 +42,17 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
+  background-color: var(--bg);
+  /* Graph paper */
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 #root {
+  position: relative;
+  z-index: 1;
   width: 1100px;
   max-width: 100%;
   border-inline: none;
@@ -41,35 +63,375 @@ body {
 h1,
 h2 {
   font-family: var(--font-title);
+  font-style: italic;
+  font-weight: 400;
   color: var(--ink);
-  font-weight: 600;
   letter-spacing: normal;
 }
+
+h3 {
+  color: var(--ink);
+}
+
+/* ---------- Buttons: chunky retro, press in when clicked ---------- */
 
 button {
   font-family: inherit;
   font-size: 15px;
-  font-weight: 400;
+  font-weight: 500;
   background-color: var(--surface);
   color: var(--ink);
   padding: 8px 16px;
-  border: 1px solid var(--line);
+  border: 1.5px solid var(--outline);
   border-radius: var(--radius);
+  box-shadow: 2px 2px 0 var(--outline);
   cursor: pointer;
   transition:
+    transform 0.12s,
+    box-shadow 0.12s,
     background-color 0.15s,
-    border-color 0.15s,
     color 0.15s;
 }
 
 button:hover {
-  background-color: var(--pink-50);
-  border-color: var(--pink-300);
+  background-color: var(--matcha-100);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--outline);
+}
+
+button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 var(--outline);
+}
+
+button:disabled,
+button:disabled:hover,
+button:disabled:active {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+  box-shadow: 2px 2px 0 var(--outline);
+}
+
+.primary-button {
+  background: var(--berry-400);
+  color: white;
+  font-weight: 600;
+}
+
+.primary-button:hover,
+.primary-button:disabled:hover {
+  background: var(--berry-500);
+}
+
+.primary-button:disabled:hover {
+  background: var(--berry-400);
+}
+
+.text-button,
+.text-button:hover,
+.text-button:active {
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  transform: none;
+  color: var(--berry-600);
+  font-size: inherit;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--berry-300);
+  text-underline-offset: 4px;
+}
+
+.text-button:hover {
+  text-decoration-color: var(--berry-500);
 }
 
 button:focus-visible,
 input:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--pink-300);
-  outline-offset: 2px;
+  outline: 2px dashed var(--berry-400);
+  outline-offset: 3px;
+}
+
+/* ---------- Retro windows ---------- */
+
+.window {
+  background: var(--surface);
+  border: 1.5px solid var(--outline);
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 var(--matcha-300);
+  overflow: hidden;
+  animation: window-open 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.15) both;
+}
+
+.window-pink {
+  box-shadow: 4px 4px 0 var(--berry-200);
+}
+
+.window-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px 5px 10px;
+  background: var(--matcha-200);
+  border-bottom: 1.5px solid var(--outline);
+}
+
+.window-pink .window-bar {
+  background: var(--berry-100);
+}
+
+.window-title {
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--ink);
+}
+
+/* The little pinstripes between the title and the buttons */
+.window-bar::after {
+  content: "";
+  order: 1;
+  flex: 1;
+  height: 7px;
+  min-width: 12px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--outline) 0 1px,
+    transparent 1px 3px
+  );
+  opacity: 0.35;
+}
+
+.window-buttons {
+  order: 2;
+  display: flex;
+  gap: 4px;
+}
+
+.window-buttons span {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1.5px solid var(--outline);
+  border-radius: 3px;
+  background: var(--surface);
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--outline);
+}
+
+.window-body {
+  padding: 18px 20px;
+}
+
+@keyframes window-open {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+/* ---------- Pixel loader ---------- */
+
+.pixel-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 24px 0;
+}
+
+.pixel-loader-label {
+  font-family: var(--font-pixel);
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+
+.pixel-loader-bar {
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  border: 1.5px solid var(--outline);
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.pixel-loader-bar span {
+  width: 10px;
+  height: 14px;
+  background: var(--matcha-100);
+  animation: pixel-fill 1.44s steps(1) infinite;
+}
+
+@keyframes pixel-fill {
+  0%,
+  100% {
+    background: var(--matcha-100);
+  }
+  10%,
+  60% {
+    background: var(--berry-400);
+  }
+}
+
+/* ---------- Pixel icons + sparkles ---------- */
+
+.pixel-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+}
+
+.sparkles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  animation: twinkle 3.2s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(0.7) rotate(0deg);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1) rotate(45deg);
+  }
+}
+
+/* ---------- Menu bar ---------- */
+
+.menu-bar {
+  position: sticky;
+  top: 10px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 4px 6px 4px 12px;
+  background: var(--surface);
+  border: 1.5px solid var(--outline);
+  border-radius: 8px;
+  box-shadow: 3px 3px 0 var(--matcha-300);
+  font-family: var(--font-pixel);
+}
+
+.menu-brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.menu-brand .pixel-icon {
+  animation: bob 2.4s ease-in-out infinite;
+}
+
+@keyframes bob {
+  50% {
+    transform: translateY(-2px) rotate(-6deg);
+  }
+}
+
+.menu-items {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.menu-item,
+.menu-item:hover,
+.menu-item:active {
+  padding: 4px 10px;
+  border: 1.5px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.menu-item:hover {
+  background: var(--matcha-100);
+  color: var(--ink);
+}
+
+.menu-item.active {
+  background: var(--berry-100);
+  border-color: var(--berry-300);
+  color: var(--berry-600);
+}
+
+.menu-clock {
+  padding: 2px 8px;
+  border-left: 1.5px solid var(--line);
+  font-size: 13px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .menu-bar {
+    position: static;
+    flex-wrap: wrap;
+    gap: 2px 8px;
+    padding-bottom: 2px;
+  }
+
+  /* One row that scrolls sideways instead of wrapping */
+  .menu-items {
+    order: 3;
+    flex-basis: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 -2px;
+  }
+
+  .menu-item,
+  .menu-item:hover,
+  .menu-item:active {
+    flex-shrink: 0;
+    padding: 4px 8px;
+  }
+
+  .menu-clock {
+    margin-left: auto;
+    border-left: none;
+  }
+}
+
+/* People who've asked their OS for less motion get a still page. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

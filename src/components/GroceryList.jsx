@@ -7,6 +7,7 @@ import {
   plural,
   toTitleCase,
 } from "../lib/format";
+import { PixelIcon, PixelLoader, Window } from "./Retro";
 
 const STORAGE_KEY = "groceryList";
 const EXAMPLE_LIST = ["eggs", "milk", "bread", "apples", "chicken thigh"];
@@ -131,76 +132,82 @@ export default function GroceryList({ stores, postal, ready, nearbyStores }) {
   };
 
   return (
-    <section className="grocery-list">
-      <form
-        className="list-form"
-        onSubmit={(e) => {
-          e.preventDefault();
-          addItems(draft);
-        }}
-      >
-        <input
-          className="search-input list-input"
-          placeholder="Add an item"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          aria-label="Add an item to your list"
-        />
-        <button type="submit" disabled={!draft.trim()}>
-          Add
-        </button>
-      </form>
-
-      {list.length === 0 ? (
-        <p className="search-summary">
-          Your list is empty.{" "}
-          <button
-            className="text-button"
-            onClick={() => updateList(EXAMPLE_LIST)}
-          >
-            Start with an example list
+    <div className="grocery-list">
+      <Window title="grocery_list.txt" icon="basket" tone="pink">
+        <form
+          className="list-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            addItems(draft);
+          }}
+        >
+          <input
+            className="search-input list-input"
+            placeholder="Add an item"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            aria-label="Add an item to your list"
+          />
+          <button type="submit" disabled={!draft.trim()}>
+            Add
           </button>
-        </p>
-      ) : (
-        <ul className="list-chips">
-          {list.map((term) => (
-            <li key={term}>
-              {term}
-              <button
-                className="chip-remove"
-                onClick={() => removeItem(term)}
-                aria-label={`Remove ${term}`}
-              >
-                ✕
+        </form>
+
+        {list.length === 0 ? (
+          <p className="search-summary">
+            Your list is empty.{" "}
+            <button
+              className="text-button"
+              onClick={() => updateList(EXAMPLE_LIST)}
+            >
+              Start with an example list
+            </button>
+          </p>
+        ) : (
+          <ul className="list-chips">
+            {list.map((term) => (
+              <li key={term}>
+                {term}
+                <button
+                  className="chip-remove"
+                  onClick={() => removeItem(term)}
+                  aria-label={`Remove ${term}`}
+                >
+                  ✕
+                </button>
+              </li>
+            ))}
+            <li className="list-clear">
+              <button className="text-button" onClick={() => updateList([])}>
+                Clear list
               </button>
             </li>
-          ))}
-          <li className="list-clear">
-            <button className="text-button" onClick={() => updateList([])}>
-              Clear list
-            </button>
-          </li>
-        </ul>
-      )}
+          </ul>
+        )}
 
-      <div className="list-actions">
-        <button
-          className="primary-button"
-          onClick={findCheapest}
-          disabled={!list.length || !ready || plan.status === "loading"}
-        >
-          {data && !outOfDate ? "Recalculate" : "Cheapest way to buy this list"}
-        </button>
-        {!ready && (
-          <span className="flyer-meta">Enter your postal code first.</span>
-        )}
-        {outOfDate && (
-          <span className="flyer-meta">Your list changed since this plan.</span>
-        )}
-      </div>
+        <div className="list-actions">
+          <button
+            className="primary-button"
+            onClick={findCheapest}
+            disabled={!list.length || !ready || plan.status === "loading"}
+          >
+            {data && !outOfDate
+              ? "Recalculate"
+              : "Cheapest way to buy this list"}
+          </button>
+          {!ready && (
+            <span className="flyer-meta">Enter your postal code first.</span>
+          )}
+          {outOfDate && (
+            <span className="flyer-meta">
+              Your list changed since this plan.
+            </span>
+          )}
+        </div>
+      </Window>
 
       {plan.status === "loading" && (
-        <p className="loading">Pricing your list at every store</p>
+        <PixelLoader label="Pricing your list at every store" />
       )}
       {plan.status === "error" && <p className="flyer-error">{plan.error}</p>}
 
@@ -247,6 +254,7 @@ export default function GroceryList({ stores, postal, ready, nearbyStores }) {
                 return (
                   <div className="plan-store" key={store}>
                     <h3 className="plan-store-name">
+                      <PixelIcon name="basket" size={18} />
                       {store}
                       {distance(store) && (
                         <span className="flyer-distance">
@@ -300,68 +308,73 @@ export default function GroceryList({ stores, postal, ready, nearbyStores }) {
             </p>
           )}
 
-          <h3 className="compare-title">Every store side by side</h3>
-          <div className="compare-scroll">
-            <table className="compare-table">
-              <thead>
-                <tr>
-                  <th scope="col">Item</th>
-                  {stores.map((store) => (
-                    <th scope="col" key={store}>
-                      {store}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {data.items.map((row) => {
-                  const prices = stores
-                    .map((s) => row.byStore[s]?.price)
-                    .filter((p) => p != null);
-                  const low = prices.length ? Math.min(...prices) : null;
-                  return (
-                    <tr key={row.term}>
-                      <th scope="row">{row.term}</th>
-                      {stores.map((store) => {
-                        const match = row.byStore[store];
-                        return (
-                          <td
-                            key={store}
-                            className={
-                              match && match.price === low ? "lowest" : ""
-                            }
-                            title={match ? toTitleCase(match.name) : ""}
-                          >
-                            {match ? formatPrice(match.price) : "-"}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th scope="row">Total</th>
-                  {stores.map((store) => {
-                    const trip = data.singleStores.find(
-                      (t) => t.stores[0] === store,
-                    );
+          <Window
+            title="every_store_side_by_side.xls"
+            icon="folder"
+            className="compare-window"
+          >
+            <div className="compare-scroll">
+              <table className="compare-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Item</th>
+                    {stores.map((store) => (
+                      <th scope="col" key={store}>
+                        {store}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.items.map((row) => {
+                    const prices = stores
+                      .map((s) => row.byStore[s]?.price)
+                      .filter((p) => p != null);
+                    const low = prices.length ? Math.min(...prices) : null;
                     return (
-                      <td key={store}>
-                        {trip ? formatPrice(trip.total) : "-"}
-                        {trip && (
-                          <span className="compare-covered">
-                            {trip.covered} of {listSize}
-                          </span>
-                        )}
-                      </td>
+                      <tr key={row.term}>
+                        <th scope="row">{row.term}</th>
+                        {stores.map((store) => {
+                          const match = row.byStore[store];
+                          return (
+                            <td
+                              key={store}
+                              className={
+                                match && match.price === low ? "lowest" : ""
+                              }
+                              title={match ? toTitleCase(match.name) : ""}
+                            >
+                              {match ? formatPrice(match.price) : "-"}
+                            </td>
+                          );
+                        })}
+                      </tr>
                     );
                   })}
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th scope="row">Total</th>
+                    {stores.map((store) => {
+                      const trip = data.singleStores.find(
+                        (t) => t.stores[0] === store,
+                      );
+                      return (
+                        <td key={store}>
+                          {trip ? formatPrice(trip.total) : "-"}
+                          {trip && (
+                            <span className="compare-covered">
+                              {trip.covered} of {listSize}
+                            </span>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </Window>
 
           {data.notOnSale.length > 0 && (
             <p className="plan-missing">
@@ -370,6 +383,6 @@ export default function GroceryList({ stores, postal, ready, nearbyStores }) {
           )}
         </div>
       )}
-    </section>
+    </div>
   );
 }

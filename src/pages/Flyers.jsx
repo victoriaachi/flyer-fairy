@@ -13,6 +13,7 @@ import axios from "axios";
 import SearchAll from "../components/SearchAll";
 import GroceryList from "../components/GroceryList";
 import { API, toTitleCase } from "../lib/format";
+import { MenuBar, PixelIcon, PixelLoader, Window } from "../components/Retro";
 
 const STORES = ["No Frills", "T&T Supermarket", "FreshCo", "Loblaws", "Costco"];
 
@@ -291,17 +292,28 @@ function Flyers() {
 
   return (
     <div className="flyers-page">
+      <MenuBar
+        items={[
+          { id: "home", label: "Home", onClick: () => navigate("/") },
+          ...VIEWS.map((v) => ({
+            id: v.id,
+            label: v.label,
+            active: view === v.id,
+            onClick: () => changeView(v.id),
+          })),
+        ]}
+      />
+
       <header className="page-header">
-        <div>
-          <h1 className="page-title">Flyer Fairy</h1>
-          <p className="page-subtitle">Grocery deals near you!</p>
-        </div>
-        <button className="home-link" onClick={() => navigate("/")}>
-          Home
-        </button>
+        <h1 className="page-title">Flyer Fairy</h1>
+        <p className="page-subtitle">Grocery deals near you!</p>
       </header>
 
-      <section className="controls-card">
+      <Window
+        title="find_stores.exe"
+        icon="magnifier"
+        className="controls-card"
+      >
         <div className="postal-row">
           <label htmlFor="postalCode">Postal code</label>
           <input
@@ -325,19 +337,6 @@ function Flyers() {
         >
           {postalMessage || "\u00a0"}
         </p>
-        <div className="view-tabs" role="tablist" aria-label="View">
-          {VIEWS.map((v) => (
-            <button
-              key={v.id}
-              role="tab"
-              aria-selected={view === v.id}
-              className={`view-tab ${view === v.id ? "active" : ""}`}
-              onClick={() => changeView(v.id)}
-            >
-              {v.label}
-            </button>
-          ))}
-        </div>
         {view === "browse" && (
           <div className="store-chips">
             {STORES.map((store) => {
@@ -359,7 +358,7 @@ function Flyers() {
             })}
           </div>
         )}
-      </section>
+      </Window>
 
       {view === "search" && (
         <SearchAll
@@ -380,7 +379,7 @@ function Flyers() {
 
       {view === "browse" && (
         <>
-          {!loaded && <p className="loading">Loading flyers</p>}
+          {!loaded && <PixelLoader label="Loading flyers" />}
           {loaded && error && <p className="flyer-error">{error}</p>}
 
           {loaded && !error && storeName !== "" && (
@@ -390,68 +389,77 @@ function Flyers() {
                   No current {storeName} flyers near {postalCode}.
                 </p>
               ) : (
-                <div className="flyer-info">
-                  {flyer.merchantLogo && (
-                    <img
-                      className="flyer-logo"
-                      src={flyer.merchantLogo}
-                      alt={`${flyer.merchant} logo`}
-                    />
-                  )}
-                  <div className="flyer-info-text">
-                    <h2 className="flyer-store">{storeName}</h2>
-                    <div className="flyer-week">
-                      On sale {formatDate(flyer.validFrom)} to{" "}
-                      {formatDate(flyer.validTo)}
-                    </div>
+                <Window
+                  title={`${storeName.toLowerCase().replace(/[^a-z0-9]+/g, "_")}_flyer.txt`}
+                  icon="strawberry"
+                  tone="pink"
+                  className="flyer-window"
+                >
+                  <div className="flyer-info">
+                    {flyer.merchantLogo && (
+                      <img
+                        className="flyer-logo"
+                        src={flyer.merchantLogo}
+                        alt={`${flyer.merchant} logo`}
+                      />
+                    )}
+                    <div className="flyer-info-text">
+                      <h2 className="flyer-store">{storeName}</h2>
+                      <div className="flyer-week">
+                        On sale {formatDate(flyer.validFrom)} to{" "}
+                        {formatDate(flyer.validTo)}
+                      </div>
 
-                    <div className="flyer-location">
-                      {locationLoading && (
-                        <span className="flyer-meta shimmer">
-                          Looking up the closest {storeName}
-                        </span>
-                      )}
-                      {!locationLoading && location?.found && (
-                        <>
-                          <div className="flyer-store-name">
-                            {location.name}
-                            {location.distanceKm != null && (
-                              <span className="flyer-distance">
-                                , {location.distanceKm} km away
-                              </span>
+                      <div className="flyer-location">
+                        {locationLoading && (
+                          <span className="flyer-meta shimmer">
+                            Looking up the closest {storeName}
+                          </span>
+                        )}
+                        {!locationLoading && location?.found && (
+                          <>
+                            <div className="flyer-store-name">
+                              {location.name}
+                              {location.distanceKm != null && (
+                                <span className="flyer-distance">
+                                  , {location.distanceKm} km away
+                                </span>
+                              )}
+                            </div>
+                            {location.address && (
+                              <div className="flyer-meta">
+                                {location.address}
+                              </div>
                             )}
-                          </div>
-                          {location.address && (
-                            <div className="flyer-meta">{location.address}</div>
-                          )}
-                        </>
-                      )}
-                      {!locationLoading && location && !location.found && (
-                        <span className="flyer-meta">
-                          Couldn't pin down the exact store near {postalCode}
-                        </span>
-                      )}
-                    </div>
+                          </>
+                        )}
+                        {!locationLoading && location && !location.found && (
+                          <span className="flyer-meta">
+                            Couldn't pin down the exact store near {postalCode}
+                          </span>
+                        )}
+                      </div>
 
-                    <div className="flyer-actions">
-                      {!locationLoading && location?.mapsUrl && (
-                        <a
-                          className="maps-link"
-                          href={location.mapsUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {location.found
-                            ? "Open in Google Maps"
-                            : `Search for ${storeName} on Google Maps`}
-                        </a>
-                      )}
-                      <span className="flyer-count">
-                        {itemCount} items on sale
-                      </span>
+                      <div className="flyer-actions">
+                        {!locationLoading && location?.mapsUrl && (
+                          <a
+                            className="maps-link"
+                            href={location.mapsUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {location.found
+                              ? "Open in Google Maps"
+                              : `Search for ${storeName} on Google Maps`}
+                          </a>
+                        )}
+                        <span className="flyer-count">
+                          {itemCount} items on sale
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Window>
               )}
 
               {flyer && (
@@ -492,59 +500,65 @@ function Flyers() {
                 </p>
               )}
 
-              <div className="categories">
-                {visibleCategories.map(([category, categoryItems]) => {
-                  // Searching opens every category that has matches.
-                  const isOpen = query !== "" || openCategory === category;
-                  return (
-                    <Fragment key={category}>
-                      <button
-                        className={`category-header ${isOpen ? "open" : ""}`}
-                        onClick={() =>
-                          setOpenCategory(
-                            openCategory === category ? null : category,
-                          )
-                        }
-                        aria-expanded={isOpen}
-                      >
-                        <span className="category-name">{category}</span>
-                        <span className="category-count">
-                          {categoryItems.length}
-                        </span>
-                        <svg
-                          className="category-chevron"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <path d="m6 9 6 6 6-6" />
-                        </svg>
-                      </button>
-                      {isOpen && (
-                        <div className="item-grid">
-                          {categoryItems.map((item) => (
-                            <article className="item-card" key={item.id}>
-                              <div className="item-image-wrap">
-                                <img
-                                  className="item-image"
-                                  src={item.cutout_image_url}
-                                  alt={toTitleCase(item.name)}
-                                  loading="lazy"
-                                />
-                              </div>
-                              <div className="item-name">
-                                {toTitleCase(item.name)}
-                              </div>
-                              <div className="item-price">
-                                ${Number(item.price).toFixed(2)}
-                              </div>
-                            </article>
-                          ))}
-                        </div>
-                      )}
-                    </Fragment>
-                  );
-                })}
-              </div>
+              {visibleCategories.length > 0 && (
+                <Window
+                  title="aisles"
+                  icon="folder"
+                  className="categories-window"
+                >
+                  <div className="categories">
+                    {visibleCategories.map(([category, categoryItems]) => {
+                      // Searching opens every category that has matches.
+                      const isOpen = query !== "" || openCategory === category;
+                      return (
+                        <Fragment key={category}>
+                          <button
+                            className={`category-header ${isOpen ? "open" : ""}`}
+                            onClick={() =>
+                              setOpenCategory(
+                                openCategory === category ? null : category,
+                              )
+                            }
+                            aria-expanded={isOpen}
+                          >
+                            <PixelIcon
+                              name={isOpen ? "folder-open" : "folder"}
+                              size={22}
+                              className="category-folder"
+                            />
+                            <span className="category-name">{category}</span>
+                            <span className="category-count">
+                              {categoryItems.length}
+                            </span>
+                          </button>
+                          {isOpen && (
+                            <div className="item-grid">
+                              {categoryItems.map((item) => (
+                                <article className="item-card" key={item.id}>
+                                  <div className="item-image-wrap">
+                                    <img
+                                      className="item-image"
+                                      src={item.cutout_image_url}
+                                      alt={toTitleCase(item.name)}
+                                      loading="lazy"
+                                    />
+                                  </div>
+                                  <div className="item-name">
+                                    {toTitleCase(item.name)}
+                                  </div>
+                                  <div className="item-price">
+                                    ${Number(item.price).toFixed(2)}
+                                  </div>
+                                </article>
+                              ))}
+                            </div>
+                          )}
+                        </Fragment>
+                      );
+                    })}
+                  </div>
+                </Window>
+              )}
             </section>
           )}
         </>
