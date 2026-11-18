@@ -360,209 +360,213 @@ function Flyers() {
         )}
       </Window>
 
-      {view === "search" && (
-        <SearchAll
-          stores={STORES}
-          postal={postal}
-          ready={postalStatus === "valid"}
-          nearbyStores={nearby.stores}
-        />
-      )}
-      {view === "list" && (
-        <GroceryList
-          stores={STORES}
-          postal={postal}
-          ready={postalStatus === "valid"}
-          nearbyStores={nearby.stores}
-        />
-      )}
+      <div className="view-panel" key={view}>
+        {view === "search" && (
+          <SearchAll
+            stores={STORES}
+            postal={postal}
+            ready={postalStatus === "valid"}
+            nearbyStores={nearby.stores}
+          />
+        )}
+        {view === "list" && (
+          <GroceryList
+            stores={STORES}
+            postal={postal}
+            ready={postalStatus === "valid"}
+            nearbyStores={nearby.stores}
+          />
+        )}
 
-      {view === "browse" && (
-        <>
-          {!loaded && <PixelLoader label="Loading flyers" />}
-          {loaded && error && <p className="flyer-error">{error}</p>}
+        {view === "browse" && (
+          <>
+            {!loaded && <PixelLoader label="Loading flyers" />}
+            {loaded && error && <p className="flyer-error">{error}</p>}
 
-          {loaded && !error && storeName !== "" && (
-            <section className="results">
-              {!flyer ? (
-                <p className="flyer-empty">
-                  No current {storeName} flyers near {postalCode}.
-                </p>
-              ) : (
-                <Window
-                  title={`${storeName.toLowerCase().replace(/[^a-z0-9]+/g, "_")}_flyer.txt`}
-                  icon="strawberry"
-                  tone="pink"
-                  className="flyer-window"
-                >
-                  <div className="flyer-info">
-                    {flyer.merchantLogo && (
-                      <img
-                        className="flyer-logo"
-                        src={flyer.merchantLogo}
-                        alt={`${flyer.merchant} logo`}
-                      />
-                    )}
-                    <div className="flyer-info-text">
-                      <h2 className="flyer-store">{storeName}</h2>
-                      <div className="flyer-week">
-                        On sale {formatDate(flyer.validFrom)} to{" "}
-                        {formatDate(flyer.validTo)}
-                      </div>
+            {loaded && !error && storeName !== "" && (
+              <section className="results">
+                {!flyer ? (
+                  <p className="flyer-empty">
+                    No current {storeName} flyers near {postalCode}.
+                  </p>
+                ) : (
+                  <Window
+                    title={`${storeName.toLowerCase().replace(/[^a-z0-9]+/g, "_")}_flyer.txt`}
+                    icon="strawberry"
+                    tone="pink"
+                    className="flyer-window"
+                  >
+                    <div className="flyer-info">
+                      {flyer.merchantLogo && (
+                        <img
+                          className="flyer-logo"
+                          src={flyer.merchantLogo}
+                          alt={`${flyer.merchant} logo`}
+                        />
+                      )}
+                      <div className="flyer-info-text">
+                        <h2 className="flyer-store">{storeName}</h2>
+                        <div className="flyer-week">
+                          On sale {formatDate(flyer.validFrom)} to{" "}
+                          {formatDate(flyer.validTo)}
+                        </div>
 
-                      <div className="flyer-location">
-                        {locationLoading && (
-                          <span className="flyer-meta shimmer">
-                            Looking up the closest {storeName}
-                          </span>
-                        )}
-                        {!locationLoading && location?.found && (
-                          <>
-                            <div className="flyer-store-name">
-                              {location.name}
-                              {location.distanceKm != null && (
-                                <span className="flyer-distance">
-                                  , {location.distanceKm} km away
-                                </span>
-                              )}
-                            </div>
-                            {location.address && (
-                              <div className="flyer-meta">
-                                {location.address}
+                        <div className="flyer-location">
+                          {locationLoading && (
+                            <span className="flyer-meta shimmer">
+                              Looking up the closest {storeName}
+                            </span>
+                          )}
+                          {!locationLoading && location?.found && (
+                            <>
+                              <div className="flyer-store-name">
+                                {location.name}
+                                {location.distanceKm != null && (
+                                  <span className="flyer-distance">
+                                    , {location.distanceKm} km away
+                                  </span>
+                                )}
                               </div>
-                            )}
-                          </>
-                        )}
-                        {!locationLoading && location && !location.found && (
-                          <span className="flyer-meta">
-                            Couldn't pin down the exact store near {postalCode}
-                          </span>
-                        )}
-                      </div>
+                              {location.address && (
+                                <div className="flyer-meta">
+                                  {location.address}
+                                </div>
+                              )}
+                            </>
+                          )}
+                          {!locationLoading && location && !location.found && (
+                            <span className="flyer-meta">
+                              Couldn't pin down the exact store near{" "}
+                              {postalCode}
+                            </span>
+                          )}
+                        </div>
 
-                      <div className="flyer-actions">
-                        {!locationLoading && location?.mapsUrl && (
-                          <a
-                            className="maps-link"
-                            href={location.mapsUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {location.found
-                              ? "Open in Google Maps"
-                              : `Search for ${storeName} on Google Maps`}
-                          </a>
-                        )}
-                        <span className="flyer-count">
-                          {itemCount} items on sale
-                        </span>
+                        <div className="flyer-actions">
+                          {!locationLoading && location?.mapsUrl && (
+                            <a
+                              className="maps-link"
+                              href={location.mapsUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {location.found
+                                ? "Open in Google Maps"
+                                : `Search for ${storeName} on Google Maps`}
+                            </a>
+                          )}
+                          <span className="flyer-count">
+                            {itemCount} items on sale
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Window>
-              )}
+                  </Window>
+                )}
 
-              {flyer && (
-                <div className="search-wrap">
-                  <svg
-                    className="search-icon"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <circle cx="11" cy="11" r="7" />
-                    <path d="m20 20-3.5-3.5" />
-                  </svg>
-                  <input
-                    type="search"
-                    className="search-input"
-                    placeholder="Search"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    aria-label="Search items"
-                  />
-                  {search && (
-                    <button
-                      className="search-clear"
-                      onClick={() => setSearch("")}
-                      aria-label="Clear search"
+                {flyer && (
+                  <div className="search-wrap">
+                    <svg
+                      className="search-icon"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
-                      ✕
-                    </button>
-                  )}
-                </div>
-              )}
-
-              {flyer && query && (
-                <p className="search-summary">
-                  {matchCount === 0
-                    ? `No deals match "${search.trim()}"`
-                    : `${matchCount} deal${matchCount === 1 ? "" : "s"} matching "${search.trim()}"`}
-                </p>
-              )}
-
-              {visibleCategories.length > 0 && (
-                <Window
-                  title="aisles"
-                  icon="folder"
-                  className="categories-window"
-                >
-                  <div className="categories">
-                    {visibleCategories.map(([category, categoryItems]) => {
-                      // Searching opens every category that has matches.
-                      const isOpen = query !== "" || openCategory === category;
-                      return (
-                        <Fragment key={category}>
-                          <button
-                            className={`category-header ${isOpen ? "open" : ""}`}
-                            onClick={() =>
-                              setOpenCategory(
-                                openCategory === category ? null : category,
-                              )
-                            }
-                            aria-expanded={isOpen}
-                          >
-                            <PixelIcon
-                              name={isOpen ? "folder-open" : "folder"}
-                              size={22}
-                              className="category-folder"
-                            />
-                            <span className="category-name">{category}</span>
-                            <span className="category-count">
-                              {categoryItems.length}
-                            </span>
-                          </button>
-                          {isOpen && (
-                            <div className="item-grid">
-                              {categoryItems.map((item) => (
-                                <article className="item-card" key={item.id}>
-                                  <div className="item-image-wrap">
-                                    <img
-                                      className="item-image"
-                                      src={item.cutout_image_url}
-                                      alt={toTitleCase(item.name)}
-                                      loading="lazy"
-                                    />
-                                  </div>
-                                  <div className="item-name">
-                                    {toTitleCase(item.name)}
-                                  </div>
-                                  <div className="item-price">
-                                    ${Number(item.price).toFixed(2)}
-                                  </div>
-                                </article>
-                              ))}
-                            </div>
-                          )}
-                        </Fragment>
-                      );
-                    })}
+                      <circle cx="11" cy="11" r="7" />
+                      <path d="m20 20-3.5-3.5" />
+                    </svg>
+                    <input
+                      type="search"
+                      className="search-input"
+                      placeholder="Search"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      aria-label="Search items"
+                    />
+                    {search && (
+                      <button
+                        className="search-clear"
+                        onClick={() => setSearch("")}
+                        aria-label="Clear search"
+                      >
+                        ✕
+                      </button>
+                    )}
                   </div>
-                </Window>
-              )}
-            </section>
-          )}
-        </>
-      )}
+                )}
+
+                {flyer && query && (
+                  <p className="search-summary">
+                    {matchCount === 0
+                      ? `No deals match "${search.trim()}"`
+                      : `${matchCount} deal${matchCount === 1 ? "" : "s"} matching "${search.trim()}"`}
+                  </p>
+                )}
+
+                {visibleCategories.length > 0 && (
+                  <Window
+                    title="aisles"
+                    icon="folder"
+                    className="categories-window"
+                  >
+                    <div className="categories">
+                      {visibleCategories.map(([category, categoryItems]) => {
+                        // Searching opens every category that has matches.
+                        const isOpen =
+                          query !== "" || openCategory === category;
+                        return (
+                          <Fragment key={category}>
+                            <button
+                              className={`category-header ${isOpen ? "open" : ""}`}
+                              onClick={() =>
+                                setOpenCategory(
+                                  openCategory === category ? null : category,
+                                )
+                              }
+                              aria-expanded={isOpen}
+                            >
+                              <PixelIcon
+                                name={isOpen ? "folder-open" : "folder"}
+                                size={22}
+                                className="category-folder"
+                              />
+                              <span className="category-name">{category}</span>
+                              <span className="category-count">
+                                {categoryItems.length}
+                              </span>
+                            </button>
+                            {isOpen && (
+                              <div className="item-grid">
+                                {categoryItems.map((item) => (
+                                  <article className="item-card" key={item.id}>
+                                    <div className="item-image-wrap">
+                                      <img
+                                        className="item-image"
+                                        src={item.cutout_image_url}
+                                        alt={toTitleCase(item.name)}
+                                        loading="lazy"
+                                      />
+                                    </div>
+                                    <div className="item-name">
+                                      {toTitleCase(item.name)}
+                                    </div>
+                                    <div className="item-price">
+                                      ${Number(item.price).toFixed(2)}
+                                    </div>
+                                  </article>
+                                ))}
+                              </div>
+                            )}
+                          </Fragment>
+                        );
+                      })}
+                    </div>
+                  </Window>
+                )}
+              </section>
+            )}
+          </>
+        )}
+      </div>
 
       <button
         className={`back-to-top-btn ${showBackToTop ? "visible" : ""}`}

@@ -28,6 +28,7 @@
   margin: 6px 0 0;
   font-size: 15px;
   color: var(--ink-soft);
+  font-family: var(--font-pixel);
 }
 
 /* ---------- Postal code + store picker ---------- */
@@ -51,10 +52,12 @@
   background: var(--matcha-50);
   box-shadow: inset 2px 2px 0 var(--matcha-200);
   color: var(--ink);
-  font-family: var(--font-pixel);
-  font-size: 17px;
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
+  font-size: 16px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .postal-input:focus {
@@ -105,7 +108,8 @@
 
 .chip-distance {
   margin-left: 8px;
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 13px;
   font-weight: 400;
   color: var(--ink-soft);
@@ -169,7 +173,8 @@
   padding: 2px 8px;
   border-radius: 4px;
   background: var(--berry-100);
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 14px;
   color: var(--berry-600);
 }
@@ -232,7 +237,8 @@
 }
 
 .flyer-count {
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 14px;
   color: var(--ink-soft);
 }
@@ -285,6 +291,40 @@
   box-shadow: 0 0 0 3px var(--berry-100);
 }
 
+/* Room for the clear and arrow buttons on the right */
+.search-all .search-input {
+  padding-right: 84px;
+}
+
+.search-go {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 32px;
+  padding: 0;
+  background: var(--matcha-200);
+  box-shadow: 2px 2px 0 var(--outline);
+}
+
+.search-go:hover {
+  background: var(--berry-200);
+}
+
+.search-go:disabled,
+.search-go:disabled:hover {
+  background: var(--matcha-100);
+}
+
+.search-clear.has-go,
+.search-clear.has-go:hover,
+.search-clear.has-go:active {
+  right: 46px;
+}
+
 /* Hide the browser's own clear button; we have our own. */
 .search-input::-webkit-search-cancel-button {
   display: none;
@@ -305,6 +345,28 @@
   box-shadow: none;
   font-size: 13px;
   color: var(--ink-soft);
+}
+
+.suggestion-button,
+.suggestion-button:hover,
+.suggestion-button:active {
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  transform: none;
+  color: var(--ink);
+  font-size: inherit;
+  font-weight: 400;
+  text-decoration: underline;
+  text-decoration-color: var(--berry-300);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+.suggestion-button:hover {
+  color: var(--berry-500);
+  text-decoration-color: var(--berry-500);
 }
 
 .search-summary {
@@ -374,7 +436,8 @@
   border-radius: 4px;
   background: var(--berry-50);
   color: var(--berry-600);
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 13px;
   text-align: center;
 }
@@ -382,6 +445,7 @@
 /* ---------- Item cards ---------- */
 
 .item-grid {
+  animation: unfold 0.3s ease-out both;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
   gap: 14px;
@@ -420,6 +484,18 @@
   box-shadow: 3px 3px 0 var(--berry-200);
 }
 
+/* A folder's contents slide down out of the header when it opens */
+@keyframes unfold {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
 @keyframes pop-in {
   from {
     opacity: 0;
@@ -455,9 +531,10 @@
   padding: 1px 8px;
   border-radius: 4px;
   background: var(--berry-100);
-  font-family: var(--font-pixel);
-  font-size: 18px;
-  font-weight: 500;
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
+  font-size: 16px;
+  font-weight: 600;
   color: var(--berry-600);
 }
 
@@ -511,6 +588,7 @@
 .store-summary-name {
   font-size: 15px;
   font-weight: 500;
+  font-family: var(--font-pixel);
 }
 
 .store-summary-detail {
@@ -688,7 +766,8 @@
 
 .plan-store-total {
   margin-left: auto;
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-weight: 500;
   color: var(--berry-600);
 }
@@ -817,7 +896,8 @@
 
 .compare-covered {
   display: block;
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   font-size: 12px;
   font-weight: 400;
   color: var(--ink-soft);

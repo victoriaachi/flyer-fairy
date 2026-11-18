@@ -73,6 +73,37 @@ h3 {
   color: var(--ink);
 }
 
+/* ---------- Click sparkles ---------- */
+
+.click-burst {
+  position: fixed;
+  z-index: 100;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.click-burst span {
+  position: absolute;
+  left: -1.5px;
+  top: -1.5px;
+  width: 3px;
+  height: 3px;
+  background: var(--berry-300);
+  animation: burst 0.4s ease-out forwards;
+}
+
+@keyframes burst {
+  0% {
+    opacity: 0.9;
+    transform: rotate(var(--angle)) translateX(4px);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateX(13px);
+  }
+}
+
 /* ---------- Buttons: chunky retro, press in when clicked ---------- */
 
 button {
@@ -131,22 +162,21 @@ button:disabled:active {
 .text-button,
 .text-button:hover,
 .text-button:active {
-  padding: 0;
+  padding: 1px 6px;
+  margin: 0 -2px;
   border: none;
+  border-radius: 4px;
   background: none;
   box-shadow: none;
   transform: none;
   color: var(--berry-600);
   font-size: inherit;
-  font-weight: 500;
-  text-decoration: underline;
-  text-decoration-style: wavy;
-  text-decoration-color: var(--berry-300);
-  text-underline-offset: 4px;
+  font-weight: 600;
+  text-decoration: none;
 }
 
 .text-button:hover {
-  text-decoration-color: var(--berry-500);
+  background: var(--berry-100);
 }
 
 button:focus-visible,
@@ -389,6 +419,8 @@ a:focus-visible {
 
 .menu-clock {
   padding: 2px 8px;
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
   border-left: 1.5px solid var(--line);
   font-size: 13px;
   color: var(--ink-soft);
@@ -423,6 +455,19 @@ a:focus-visible {
   .menu-clock {
     margin-left: auto;
     border-left: none;
+  }
+}
+
+/* ---------- View switches: the new view eases in ---------- */
+
+.view-panel {
+  animation: view-in 0.35s ease-out both;
+}
+
+@keyframes view-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
 }
 

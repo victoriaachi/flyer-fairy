@@ -1,22 +1,35 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API, formatPrice, plural, toTitleCase } from "../lib/format";
-import { PixelLoader, Window } from "./Retro";
+import { PixelIcon, PixelLoader, Window } from "./Retro";
 
 const SUGGESTIONS = ["eggs", "chicken thigh", "salmon", "apples", "butter"];
 
 // Searches every store's flyer at once and lists matches cheapest first.
+// Runs when you press Enter or the arrow button, not on every keystroke.
 export default function SearchAll({ stores, postal, ready, nearbyStores }) {
   const [query, setQuery] = useState("");
+  // The search that was actually submitted.
+  const [submitted, setSubmitted] = useState("");
   const [result, setResult] = useState({ key: null });
 
-  const q = query.trim();
+  const q = submitted;
   const key = `${postal}|${q.toLowerCase()}`;
+
+  function runSearch(text) {
+    setQuery(text);
+    setSubmitted(text.trim());
+  }
+
+  function clearSearch() {
+    setQuery("");
+    setSubmitted("");
+  }
 
   useEffect(() => {
     if (!ready || !q) return;
     let cancelled = false;
-    const timer = setTimeout(async () => {
+    (async () => {
       try {
         const res = await axios.get(`${API}/api/search`, {
           params: { q, postal },
@@ -31,10 +44,9 @@ export default function SearchAll({ stores, postal, ready, nearbyStores }) {
           });
         }
       }
-    }, 300);
+    })();
     return () => {
       cancelled = true;
-      clearTimeout(timer);
     };
   }, [key, q, postal, ready]);
 
@@ -52,7 +64,14 @@ export default function SearchAll({ stores, postal, ready, nearbyStores }) {
       icon="magnifier"
       className="search-all"
     >
-      <div className="search-wrap">
+      <form
+        className="search-wrap"
+        role="search"
+        onSubmit={(e) => {
+          e.preventDefault();
+          runSearch(query);
+        }}
+      >
         <svg className="search-icon" viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="11" cy="11" r="7" />
           <path d="m20 20-3.5-3.5" />
@@ -68,25 +87,37 @@ export default function SearchAll({ stores, postal, ready, nearbyStores }) {
         />
         {query && (
           <button
-            className="search-clear"
-            onClick={() => setQuery("")}
+            type="button"
+            className="search-clear has-go"
+            onClick={clearSearch}
             aria-label="Clear search"
           >
             ✕
           </button>
         )}
-      </div>
+        <button
+          type="submit"
+          className="search-go"
+          disabled={!ready || !query.trim()}
+          aria-label="Search"
+        >
+          <PixelIcon name="arrow" size={16} />
+        </button>
+      </form>
 
       {!ready && (
         <p className="search-summary">Enter your postal code to search.</p>
       )}
 
-      {ready && !q && (
+      {ready && !q && !query && (
         <p className="search-summary">
           Try{" "}
           {SUGGESTIONS.map((s, i) => (
             <span key={s}>
-              <button className="text-button" onClick={() => setQuery(s)}>
+              <button
+                className="suggestion-button"
+                onClick={() => runSearch(s)}
+              >
                 {s}
               </button>
               {i < SUGGESTIONS.length - 1 ? ", " : ""}

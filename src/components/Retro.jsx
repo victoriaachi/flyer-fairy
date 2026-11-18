@@ -69,6 +69,15 @@ const ICONS = {
     ".DLMLMLMLMD.",
     "..DDDDDDDD..",
   ],
+  arrow: [
+    "....D...",
+    "....DD..",
+    "DDDDDDD.",
+    "DDDDDDDD",
+    "DDDDDDD.",
+    "....DD..",
+    "....D...",
+  ],
   magnifier: [
     "..DDDD....",
     ".DLLLLD...",
@@ -225,4 +234,49 @@ export function Sparkles() {
       ))}
     </div>
   );
+}
+
+// ---------- Click sparkles ----------
+// A tiny puff of pink pixels when you click a button or link. Skipped for
+// people who've asked their OS for reduced motion.
+
+const BURST_ANGLES = [45, 135, 225, 315];
+
+export function ClickSparkles() {
+  const [bursts, setBursts] = useState([]);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)",
+    );
+    let nextId = 0;
+    function onPointerDown(e) {
+      if (reduceMotion?.matches || e.button !== 0) return;
+      if (!e.target.closest?.("button, a")) return;
+      const id = nextId++;
+      setBursts((list) => [
+        ...list.slice(-2),
+        { id, x: e.clientX, y: e.clientY },
+      ]);
+      setTimeout(
+        () => setBursts((list) => list.filter((b) => b.id !== id)),
+        450,
+      );
+    }
+    window.addEventListener("pointerdown", onPointerDown);
+    return () => window.removeEventListener("pointerdown", onPointerDown);
+  }, []);
+
+  return bursts.map((b) => (
+    <div
+      key={b.id}
+      className="click-burst"
+      style={{ left: b.x, top: b.y }}
+      aria-hidden="true"
+    >
+      {BURST_ANGLES.map((angle) => (
+        <span key={angle} style={{ "--angle": `${angle}deg` }} />
+      ))}
+    </div>
+  ));
 }

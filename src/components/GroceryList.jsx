@@ -245,7 +245,7 @@ export default function GroceryList({ stores, postal, ready, nearbyStores }) {
           </div>
 
           {selected && (
-            <div className="plan-picks">
+            <div className="plan-picks" key={selected.id}>
               {selected.trip.stores.map((store) => {
                 const picks = selected.trip.picks.filter(
                   (p) => p.store === store,
