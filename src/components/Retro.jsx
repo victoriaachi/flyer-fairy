@@ -69,6 +69,15 @@ const ICONS = {
     ".DLMLMLMLMD.",
     "..DDDDDDDD..",
   ],
+  "arrow-up": [
+    "...DD...",
+    "..DDDD..",
+    ".DDDDDD.",
+    "DDDDDDDD",
+    "...DD...",
+    "...DD...",
+    "...DD...",
+  ],
   arrow: [
     "....D...",
     "....DD..",

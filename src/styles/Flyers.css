@@ -913,9 +913,9 @@
   width: 44px;
   height: 44px;
   padding: 0;
+  display: grid;
+  place-items: center;
   background: var(--berry-100);
-  font-family: var(--font-pixel);
-  font-size: 18px;
   opacity: 0;
   translate: 0 10px;
   pointer-events: none;

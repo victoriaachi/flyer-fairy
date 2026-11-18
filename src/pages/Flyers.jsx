@@ -575,7 +575,7 @@ function Flyers() {
         aria-hidden={!showBackToTop}
         tabIndex={showBackToTop ? 0 : -1}
       >
-        ↑
+        <PixelIcon name="arrow-up" size={18} />
       </button>
     </div>
   );
