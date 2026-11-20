@@ -1,0 +1,14 @@
+# Render blueprint for the backend (free web service).
+# In Render: New > Blueprint > pick this repo.
+services:
+  - type: web
+    name: flyer-fairy-backend
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: CORS_ORIGIN
+        sync: false # set to your Vercel URL, e.g. https://flyer-fairy.vercel.app

@@ -16,10 +16,21 @@ const MAX_LIST_ITEMS = 30;
 
 const app = express();
 
-app.use(cors());
+// Which sites may call this API. Locally anything goes; on Render, set
+// CORS_ORIGIN to the Vercel URL (comma-separate several).
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim())
+  : null;
+app.use(cors(allowedOrigins ? { origin: allowedOrigins } : undefined));
 app.use(express.json());
 
 const PORT = process.env.PORT || 8000;
+
+// Opening the backend's address in a browser (or Render's health check)
+// shows this instead of "Cannot GET /".
+app.get(["/", "/api/health"], (req, res) => {
+  res.json({ ok: true, service: "flyer-fairy backend" });
+});
 
 app.get("/api/test", (req, res) => {
   res.json({
