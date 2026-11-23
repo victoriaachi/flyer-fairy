@@ -5,11 +5,8 @@ import { PixelIcon, PixelLoader, Window } from "./Retro";
 
 const SUGGESTIONS = ["eggs", "chicken thigh", "salmon", "apples", "butter"];
 
-// Searches every store's flyer at once and lists matches cheapest first.
-// Runs when you press Enter or the arrow button, not on every keystroke.
 export default function SearchAll({ stores, postal, ready, nearbyStores }) {
   const [query, setQuery] = useState("");
-  // The search that was actually submitted.
   const [submitted, setSubmitted] = useState("");
   const [result, setResult] = useState({ key: null });
 
@@ -63,6 +60,7 @@ export default function SearchAll({ stores, postal, ready, nearbyStores }) {
       title="search_every_store.exe"
       icon="magnifier"
       className="search-all"
+      tone="pink"
     >
       <form
         className="search-wrap"

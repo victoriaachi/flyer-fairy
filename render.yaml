@@ -1,5 +1,3 @@
-# Render blueprint for the backend (free web service).
-# In Render: New > Blueprint > pick this repo.
 services:
   - type: web
     name: flyer-fairy-backend
@@ -11,4 +9,10 @@ services:
     healthCheckPath: /api/health
     envVars:
       - key: CORS_ORIGIN
-        sync: false # set to your Vercel URL, e.g. https://flyer-fairy.vercel.app
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_SSL
+        value: "true"
+      - key: COLLECT_POSTAL_CODES
+        value: L3R3G7

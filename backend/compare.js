@@ -1,22 +1,18 @@
-// Cross-store search and the cheapest-basket planner.
-
 const { categorizeItem, escapeRegex } = require("./categorize");
 
-// "Eggs" should find "EGG BITES" and "egg" should find "12 EGGS", so each word
-// is matched on its singular form with any plural ending.
 function wordPattern(word) {
   let base = word;
   let endings = "(?:s|es)?";
   if (/[^aeiou]ies$/.test(word)) {
-    base = word.slice(0, -3); // berries -> berr(y|ies)
+    base = word.slice(0, -3);
     endings = "(?:y|ies)";
   } else if (/[^aeiou]y$/.test(word)) {
-    base = word.slice(0, -1); // berry -> berr(y|ies)
+    base = word.slice(0, -1);
     endings = "(?:y|ies)";
   } else if (/(?:ch|sh|x|o)es$/.test(word)) {
-    base = word.slice(0, -2); // tomatoes -> tomato(es)
+    base = word.slice(0, -2);
   } else if (/[^s]s$/.test(word) && word.length > 3) {
-    base = word.slice(0, -1); // eggs -> egg(s)
+    base = word.slice(0, -1);
   }
   return new RegExp(`(?:^|[^a-z0-9])${escapeRegex(base)}${endings}(?![a-z0-9])`, "i");
 }
@@ -38,15 +34,8 @@ function toSummary(item, store) {
   };
 }
 
-// Deals matching a search like "chicken thighs", for every store, cheapest
-// first.
-//
-// Every word has to appear. If the search itself belongs to an aisle ("milk"
-// is Dairy), matches from that aisle win, so "milk" finds milk and not milk
-// chocolate or Milk-Bone dog treats. That choice is made across all stores at
-// once: if any store has real milk on sale, a store without any shows nothing
-// rather than its milk chocolate. Other aisles are only used when no store
-// has anything in the right one.
+// if any store has the item in the right aisle, only use that aisle
+// so milk doesnt bring up milk chocolate or milk-bone
 function matchAcrossStores(query, dealsByStore) {
   const words = parseQuery(query);
   const stores = Object.keys(dealsByStore);
@@ -76,13 +65,10 @@ function matchAcrossStores(query, dealsByStore) {
   );
 }
 
-// Same thing for a single store's deals.
 function matchDeals(query, deals) {
   return matchAcrossStores(query, { store: deals }).store;
 }
 
-// Search every store. Returns each store's matches plus one list of the
-// cheapest matches overall.
 function searchAllStores(query, dealsByStore, { limit = 60 } = {}) {
   const byStore = {};
   const all = [];
@@ -108,8 +94,6 @@ function combinations(list, size) {
 
 const round2 = (n) => Math.round(n * 100) / 100;
 
-// Price of buying the list at a set of stores: for each item, the cheapest
-// match at any store in the set.
 function priceTrip(stores, options) {
   let total = 0;
   const picks = [];
@@ -127,7 +111,6 @@ function priceTrip(stores, options) {
       missing.push(option.term);
     }
   }
-  // A store that ends up with no items isn't really part of the trip.
   const usedStores = stores.filter((s) => picks.some((p) => p.store === s));
   return {
     stores: usedStores.length ? usedStores : stores,
@@ -138,8 +121,6 @@ function priceTrip(stores, options) {
   };
 }
 
-// More items found beats a lower total (a trip that skips half the list is
-// "cheaper" but useless). Then cheaper wins, then fewer stores.
 function compareTrips(a, b) {
   return (
     b.covered - a.covered ||
@@ -148,19 +129,8 @@ function compareTrips(a, b) {
   );
 }
 
-// Works out the cheapest way to buy a grocery list from this week's flyers.
-//
-// Returns:
-//   items:        per list item, every store's cheapest match and how many
-//                 other matches it has
-//   singleStores: every store on its own, best first
-//   bestSingle:   the best one-store trip
-//   bestPair:     the best two-store trip, if splitting actually helps
-//   cheapest:     buying each item wherever it's cheapest (every store)
-//   notOnSale:    list items nothing is on sale for this week
-//
-// exclude: flyer item ids the shopper said aren't what they meant ("not
-// flavoured milk"), so the next cheapest match is used instead.
+// tries every single store and every pair of stores,
+// more items found wins first, then the cheaper total
 function planBasket(list, dealsByStore, { exclude = [] } = {}) {
   const excluded = new Set(exclude.map(Number));
   const stores = Object.keys(dealsByStore);
@@ -184,7 +154,6 @@ function planBasket(list, dealsByStore, { exclude = [] } = {}) {
   const bestPairTrip = combinations(stores, 2)
     .map((pair) => priceTrip(pair, options))
     .sort(compareTrips)[0];
-  // Only suggest two stops if it finds more items or saves real money.
   const pairHelps =
     bestPairTrip &&
     bestSingle &&
@@ -222,4 +191,4 @@ function planBasket(list, dealsByStore, { exclude = [] } = {}) {
   };
 }
 
-module.exports = { matchAcrossStores, matchDeals, searchAllStores, planBasket, wordPattern };
+module.exports = { parseQuery, matchAcrossStores, matchDeals, searchAllStores, planBasket, wordPattern };

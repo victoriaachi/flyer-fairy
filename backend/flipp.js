@@ -1,19 +1,13 @@
-// Fetches flyers from Flipp, with a short in-memory cache so searching every
-// store (or re-opening one) doesn't refetch the same flyers over and over.
-
 const axios = require("axios");
 const { categoryFor, isGroceryPrice } = require("./categorize");
 
 const FLIPP_API = "https://dam.flippenterprise.net/api/flipp";
 const FLIPP_SID = "7927696267820832";
-// Flyers change once a week, so a few hours is plenty fresh.
 const CACHE_TTL_MS = 3 * 60 * 60 * 1000;
 
-const flyerListCache = new Map(); // postal -> { at, promise }
-const flyerItemsCache = new Map(); // flyer id -> { at, promise }
+const flyerListCache = new Map();
+const flyerItemsCache = new Map();
 
-// Shares one in-flight request per key and forgets failures so the next call
-// retries.
 function cached(cache, key, load) {
   const hit = cache.get(key);
   if (hit && Date.now() - hit.at < CACHE_TTL_MS) return hit.promise;
@@ -23,7 +17,6 @@ function cached(cache, key, load) {
   return promise;
 }
 
-// Every merchant's flyers for a postal code (one Flipp call covers them all).
 function getFlyerList(postalCode) {
   return cached(flyerListCache, postalCode, async () => {
     const res = await axios.get(`${FLIPP_API}/data`, {
@@ -44,9 +37,8 @@ function getFlyerItems(flyerId) {
   });
 }
 
-// Stores like Costco and FreshCo run several flyers at once (a weekly grocery
-// flyer plus month-long holiday / general merchandise ones). The "week" we show
-// is the weekly grocery flyer: currently valid, groceries, shortest run.
+// some stores have a few flyers at once (holiday, home stuff),
+// this picks the weekly grocery one to show the dates for
 function pickWeeklyFlyer(flyers) {
   if (!flyers.length) return null;
   const now = Date.now();
@@ -66,10 +58,6 @@ function pickWeeklyFlyer(flyers) {
   })[0];
 }
 
-// Everything on sale at one store this week.
-//   items:  every raw flyer item (for the browse view)
-//   deals:  the ones with a usable price, each tagged with its category
-//   flyer:  summary of the weekly flyer, or null if the store has none
 async function getStoreDeals(store, postalCode) {
   const flyers = (await getFlyerList(postalCode)).filter(
     (f) => f.merchant === store
@@ -96,11 +84,9 @@ async function getStoreDeals(store, postalCode) {
     flyerCount: flyers.length,
   };
 
-  return { store, flyer, items, deals, nonGroceryFlyerIds };
+  return { store, flyer, flyers, items, deals, nonGroceryFlyerIds };
 }
 
-// Deals for several stores at once. A store that fails to load is reported in
-// `failed` instead of failing the whole request.
 async function getDealsByStore(stores, postalCode) {
   const results = await Promise.allSettled(
     stores.map((store) => getStoreDeals(store, postalCode))

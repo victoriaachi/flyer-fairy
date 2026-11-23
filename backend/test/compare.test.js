@@ -66,7 +66,7 @@ test("basket picks the cheapest single store", () => {
   });
   assert.deepEqual(plan.bestSingle.stores, ["A"]);
   assert.equal(plan.bestSingle.total, 7);
-  assert.equal(plan.bestPair, null); // splitting can't beat A
+  assert.equal(plan.bestPair, null);
 });
 
 test("basket ranks finding more items above a lower total", () => {
@@ -94,7 +94,7 @@ test("basket lists items nothing is on sale for", () => {
     A: [deal("LARGE EGGS", 4)],
   });
   assert.deepEqual(plan.notOnSale, ["saffron"]);
-  assert.equal(plan.items.length, 2); // duplicate "eggs" removed
+  assert.equal(plan.items.length, 2);
 });
 
 test("a store without the right aisle shows nothing, not milk chocolate", () => {

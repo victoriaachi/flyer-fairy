@@ -7,10 +7,6 @@ const stores = {
   Costco: 2596,
 };
 
-// Keywords are matched as whole words (plurals like "apples"/"potatoes" are
-// handled automatically), and longer keywords win over shorter ones, so
-// "popcorn" beats "corn", "hot dog" beats "dog", "ice cream" beats "cream".
-// Categories are listed in the order they're shown, like walking the aisles.
 const categories = {
   Produce: [
     "fruit", "vegetable", "veggie", "apple", "pineapple", "banana", "berry",

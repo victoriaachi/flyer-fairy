@@ -7,6 +7,7 @@ const SHORTCUTS = [
   { icon: "folder", label: "Browse a store", to: "/flyers" },
   { icon: "magnifier", label: "Search by item", to: "/flyers?view=search" },
   { icon: "basket", label: "Grocery list", to: "/flyers?view=list" },
+  { icon: "chart", label: "Price history", to: "/flyers?view=history" },
 ];
 
 function Home() {

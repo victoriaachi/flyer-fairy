@@ -25,19 +25,16 @@ function saveList(list) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
   } catch {
-    // storage unavailable; the list just won't be remembered
+    // storage is blocked, the list just wont be saved
   }
 }
 
-// Write a grocery list, get the cheapest way to buy it from this week's
-// flyers: one store, two stores, or every store.
 export default function GroceryList({ stores, postal, ready, nearbyStores }) {
   const [list, setList] = useState(loadList);
   const [draft, setDraft] = useState("");
-  // Flyer items the shopper said aren't what they meant.
   const [exclude, setExclude] = useState([]);
   const [plan, setPlan] = useState({ status: "idle" });
-  const [chosen, setChosen] = useState(null); // "single" | "pair" | "cheapest"
+  const [chosen, setChosen] = useState(null);
 
   function updateList(next) {
     setList(next);
@@ -45,7 +42,6 @@ export default function GroceryList({ stores, postal, ready, nearbyStores }) {
   }
 
   function addItems(text) {
-    // Accept "eggs, milk, bread" pasted in one go.
     const added = text
       .split(/[,\n]/)
       .map((t) => t.trim().toLowerCase())
@@ -99,7 +95,6 @@ export default function GroceryList({ stores, postal, ready, nearbyStores }) {
   const outOfDate =
     data && (plan.postal !== postal || plan.list.join("|") !== list.join("|"));
 
-  // Recommend splitting only when the backend says it's worth it.
   const options = data
     ? [
         data.bestSingle && {

@@ -1,5 +1,3 @@
-/* Flyer Fairy theme: strawberry matcha on a retro desktop.
-   Matcha greens for the "OS", strawberry pinks for prices and highlights. */
 :root {
   --bg: #f3f6ea;
   --grid: rgba(113, 131, 85, 0.09);
@@ -32,7 +30,6 @@
   --font-title: "Instrument Serif", Georgia, serif;
   --font-pixel: "Pixelify Sans", "Courier New", monospace;
 
-  /* The app is designed light-only; don't let the OS flip it to dark. */
   color-scheme: light;
   color: var(--ink);
   font-family: var(--font-body);
@@ -43,7 +40,6 @@ body {
   margin: 0;
   min-height: 100vh;
   background-color: var(--bg);
-  /* Graph paper */
   background-image:
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
@@ -73,8 +69,6 @@ h3 {
   color: var(--ink);
 }
 
-/* ---------- Click sparkles ---------- */
-
 .click-burst {
   position: fixed;
   z-index: 100;
@@ -103,8 +97,6 @@ h3 {
     transform: rotate(var(--angle)) translateX(13px);
   }
 }
-
-/* ---------- Buttons: chunky retro, press in when clicked ---------- */
 
 button {
   font-family: inherit;
@@ -186,8 +178,6 @@ a:focus-visible {
   outline-offset: 3px;
 }
 
-/* ---------- Retro windows ---------- */
-
 .window {
   background: var(--surface);
   border: 1.5px solid var(--outline);
@@ -225,7 +215,6 @@ a:focus-visible {
   color: var(--ink);
 }
 
-/* The little pinstripes between the title and the buttons */
 .window-bar::after {
   content: "";
   order: 1;
@@ -272,8 +261,6 @@ a:focus-visible {
   }
 }
 
-/* ---------- Pixel loader ---------- */
-
 .pixel-loader {
   display: flex;
   flex-direction: column;
@@ -315,8 +302,6 @@ a:focus-visible {
   }
 }
 
-/* ---------- Pixel icons + sparkles ---------- */
-
 .pixel-icon {
   display: inline-block;
   flex-shrink: 0;
@@ -347,8 +332,6 @@ a:focus-visible {
     transform: scale(1) rotate(45deg);
   }
 }
-
-/* ---------- Menu bar ---------- */
 
 .menu-bar {
   position: sticky;
@@ -435,7 +418,6 @@ a:focus-visible {
     padding-bottom: 2px;
   }
 
-  /* One row that scrolls sideways instead of wrapping */
   .menu-items {
     order: 3;
     flex-basis: 100%;
@@ -458,8 +440,6 @@ a:focus-visible {
   }
 }
 
-/* ---------- View switches: the new view eases in ---------- */
-
 .view-panel {
   animation: view-in 0.35s ease-out both;
 }
@@ -471,7 +451,6 @@ a:focus-visible {
   }
 }
 
-/* People who've asked their OS for less motion get a still page. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -479,4 +458,19 @@ a:focus-visible {
     animation: none !important;
     transition: none !important;
   }
+}
+
+.pixel-loader.compact {
+  gap: 6px;
+  margin: 0;
+}
+
+.pixel-loader.compact .pixel-loader-label {
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.pixel-loader.compact .pixel-loader-bar span {
+  width: 8px;
+  height: 10px;
 }

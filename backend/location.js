@@ -1,41 +1,23 @@
-// Finds the closest branch of a grocery chain to a postal code.
-//
-// Flipp's flyers are regional and don't say which store they're for, so we:
-//   1. turn the postal code into lat/lon (geocoder.ca, free, no key)
-//   2. ask OpenStreetMap (Overpass) for supermarkets near that point
-//   3. pick the closest one whose brand matches the store
-//   4. fill in a street address via Nominatim if OSM didn't have one
-//
-// Overpass is often overloaded, so results are cached per postal code and the
-// lookup keeps running in the background if the caller stops waiting.
-
 const axios = require("axios");
 
 const USER_AGENT = "flyer-fairy/0.1 (personal grocery flyer app)";
-const SEARCH_RADIUS_M = 20000;
+// about 20 km each way
+const SEARCH_BOX_DEG = 0.18;
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
-const OVERPASS_MIRRORS = [
-  "https://overpass-api.de/api/interpreter",
-  "https://overpass.private.coffee/api/interpreter",
-  "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-];
-
-// How each chain shows up in OpenStreetMap's brand/name tags.
 const BRAND_MATCHERS = {
   "No Frills": (t) => /no ?frills/i.test(t.brand || t.name || ""),
   FreshCo: (t) => /freshco/i.test(t.brand || t.name || ""),
   Loblaws: (t) => /^loblaws$/i.test(t.brand || t.name || ""),
   Costco: (t) =>
     /costco/i.test(t.brand || t.name || "") &&
-    !/business|gas|fuel/i.test(t.name || ""),
+    !/business|gas|fuel|tire|optical|car wash|pharmacy/i.test(t.name || ""),
   "T&T Supermarket": (t) => /t ?& ?t/i.test(t.brand || t.name || ""),
   "Food Basics": (t) => /food basics/i.test(t.brand || t.name || ""),
 };
 
-const geocodeCache = new Map(); // postal -> { lat, lon, city }
-const storesCache = new Map(); // postal -> { at, promise }
-const addressCache = new Map(); // "lat,lon" -> address string
+const geocodeCache = new Map();
+const nearestCache = new Map();
 
 async function geocodePostalCode(postalCode) {
   if (geocodeCache.has(postalCode)) return geocodeCache.get(postalCode);
@@ -47,8 +29,7 @@ async function geocodePostalCode(postalCode) {
   const lat = Number(res.data.latt);
   const lon = Number(res.data.longt);
   const province = res.data.standard?.prov;
-  // geocoder.ca guesses something even for made-up codes (X0X0X0 comes back
-  // in Wisconsin), but those guesses have no province, so use that to reject.
+  // geocoder.ca makes up a spot for fake codes but leaves the province empty
   if (!Number.isFinite(lat) || !Number.isFinite(lon) || res.data.error || !province) {
     const error = new Error(`Unknown postal code ${postalCode}`);
     error.code = "UNKNOWN_POSTAL_CODE";
@@ -59,50 +40,31 @@ async function geocodePostalCode(postalCode) {
   return point;
 }
 
-async function queryOverpass(lat, lon) {
-  const query = `[out:json][timeout:25];nwr["shop"~"^(supermarket|wholesale)$"](around:${SEARCH_RADIUS_M},${lat},${lon});out center tags;`;
-  let lastError;
-  // Two passes over the mirrors: they 502 under load but often recover quickly.
-  for (let attempt = 0; attempt < 2; attempt++) {
-    for (const mirror of OVERPASS_MIRRORS) {
-      try {
-        const res = await axios.post(
-          mirror,
-          new URLSearchParams({ data: query }).toString(),
-          {
-            headers: {
-              "User-Agent": USER_AGENT,
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            timeout: 30000,
-          }
-        );
-        if (Array.isArray(res.data?.elements)) return res.data.elements;
-        lastError = new Error("Unexpected Overpass response");
-      } catch (error) {
-        lastError = error;
-      }
-    }
-    await new Promise((r) => setTimeout(r, 2000));
-  }
-  throw lastError;
+// nominatim asks for at most 1 request a second, so they all wait in line
+let nextSlot = 0;
+async function nominatimTurn() {
+  const now = Date.now();
+  const wait = Math.max(0, nextSlot - now);
+  nextSlot = Math.max(now, nextSlot) + 1100;
+  if (wait) await new Promise((r) => setTimeout(r, wait));
 }
 
-// All supermarkets near a postal code, cached so each postal code only hits
-// Overpass once a week no matter how many stores you click.
-function getNearbyStores(postalCode) {
-  const cached = storesCache.get(postalCode);
-  if (cached && Date.now() - cached.at < CACHE_TTL_MS) return cached.promise;
-
-  const promise = (async () => {
-    const origin = await geocodePostalCode(postalCode);
-    const elements = await queryOverpass(origin.lat, origin.lon);
-    return { origin, elements };
-  })();
-  storesCache.set(postalCode, { at: Date.now(), promise });
-  // Don't cache failures; let the next request try again.
-  promise.catch(() => storesCache.delete(postalCode));
-  return promise;
+async function searchNearby(storeName, origin) {
+  await nominatimTurn();
+  const d = SEARCH_BOX_DEG;
+  const res = await axios.get("https://nominatim.openstreetmap.org/search", {
+    params: {
+      q: storeName,
+      format: "jsonv2",
+      viewbox: `${origin.lon - d},${origin.lat + d},${origin.lon + d},${origin.lat - d}`,
+      bounded: 1,
+      limit: 40,
+      addressdetails: 1,
+    },
+    headers: { "User-Agent": USER_AGENT },
+    timeout: 8000,
+  });
+  return Array.isArray(res.data) ? res.data : [];
 }
 
 function distanceKm(a, b) {
@@ -116,71 +78,42 @@ function distanceKm(a, b) {
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
-function addressFromTags(t) {
-  const street = [t["addr:housenumber"], t["addr:street"]]
-    .filter(Boolean)
-    .join(" ");
-  if (!street) return null;
-  return [street, t["addr:city"], t["addr:province"] || "ON"]
-    .filter(Boolean)
-    .join(", ");
-}
-
-async function reverseGeocode(lat, lon) {
-  const key = `${lat.toFixed(5)},${lon.toFixed(5)}`;
-  if (addressCache.has(key)) return addressCache.get(key);
-  try {
-    const res = await axios.get("https://nominatim.openstreetmap.org/reverse", {
-      params: { lat, lon, format: "json", zoom: 18, addressdetails: 1 },
-      headers: { "User-Agent": USER_AGENT },
-      timeout: 6000,
-    });
-    const a = res.data.address || {};
-    const street = [a.house_number, a.road].filter(Boolean).join(" ");
-    const city = a.city || a.town || a.village || a.suburb;
-    const address = [street, city, a.state].filter(Boolean).join(", ") || null;
-    addressCache.set(key, address);
-    return address;
-  } catch {
-    return null;
-  }
+function formatAddress(a = {}) {
+  const street = [a.house_number, a.road].filter(Boolean).join(" ");
+  const city = a.city || a.town || a.village || a.suburb;
+  const province = (a["ISO3166-2-lvl4"] || "").replace("CA-", "") || a.state;
+  return [street, city, province].filter(Boolean).join(", ") || null;
 }
 
 function mapsSearchUrl(text) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(text)}`;
 }
 
-// Always returns something usable: the exact store when we can find it,
-// otherwise a Google Maps search for the chain near the postal code.
-async function findNearestStore(storeName, postalCode) {
+async function lookUpNearest(storeName, postalCode) {
   const fallback = {
     found: false,
     mapsUrl: mapsSearchUrl(`${storeName} near ${postalCode}`),
   };
-
   const matches = BRAND_MATCHERS[storeName];
   if (!matches) return fallback;
 
-  const { origin, elements } = await getNearbyStores(postalCode);
+  const origin = await geocodePostalCode(postalCode);
+  const places = await searchNearby(storeName, origin);
 
   let best = null;
-  for (const el of elements) {
-    const tags = el.tags || {};
-    const lat = el.lat ?? el.center?.lat;
-    const lon = el.lon ?? el.center?.lon;
-    if (lat == null || lon == null || !matches(tags)) continue;
-    const km = distanceKm(origin, { lat, lon });
-    if (!best || km < best.km) best = { tags, lat, lon, km };
+  for (const place of places) {
+    if (!["shop", "building"].includes(place.category)) continue;
+    if (!matches({ name: place.name })) continue;
+    const point = { lat: Number(place.lat), lon: Number(place.lon) };
+    const km = distanceKm(origin, point);
+    if (!best || km < best.km) best = { place, ...point, km };
   }
   if (!best) return fallback;
 
-  const address =
-    addressFromTags(best.tags) || (await reverseGeocode(best.lat, best.lon));
-  const label = best.tags.name || storeName;
-
+  const address = formatAddress(best.place.address);
   return {
     found: true,
-    name: label,
+    name: best.place.name || storeName,
     address,
     distanceKm: Math.round(best.km * 10) / 10,
     lat: best.lat,
@@ -192,9 +125,17 @@ async function findNearestStore(storeName, postalCode) {
   };
 }
 
-// Nearest branch of every chain at once. Runs one after another so the
-// Nominatim address lookups stay under its 1-request-per-second limit; after
-// the first chain, the Overpass data is already cached so the rest are quick.
+// cached per store and postal code for a week, failures arent cached so they retry
+function findNearestStore(storeName, postalCode) {
+  const key = `${storeName}|${postalCode}`;
+  const cached = nearestCache.get(key);
+  if (cached && Date.now() - cached.at < CACHE_TTL_MS) return cached.promise;
+  const promise = lookUpNearest(storeName, postalCode);
+  nearestCache.set(key, { at: Date.now(), promise });
+  promise.catch(() => nearestCache.delete(key));
+  return promise;
+}
+
 async function findNearestStores(storeNames, postalCode) {
   const results = {};
   for (const storeName of storeNames) {

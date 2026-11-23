@@ -1,20 +1,15 @@
-// Little retro desktop pieces: windows, pixel icons, loading bar, menu bar.
-
 import { useEffect, useState } from "react";
 
-// ---------- Pixel icons ----------
-// Each icon is a grid of characters; every letter is a colour, "." is empty.
-
 const PALETTE = {
-  D: "#5f7046", // dark matcha outline
-  M: "#b5c99a", // matcha
-  L: "#dceac9", // light matcha
-  G: "#718355", // leaf green
-  R: "#e8879f", // strawberry
-  r: "#f3b3c3", // strawberry highlight
-  W: "#fff6f8", // seed / paper
-  P: "#f7d3dc", // pink paper
-  Y: "#f4d98b", // sparkle gold
+  D: "#5f7046",
+  M: "#b5c99a",
+  L: "#dceac9",
+  G: "#718355",
+  R: "#e8879f",
+  r: "#f3b3c3",
+  W: "#fff6f8",
+  P: "#f7d3dc",
+  Y: "#f4d98b",
 };
 
 const ICONS = {
@@ -68,6 +63,16 @@ const ICONS = {
     ".DMMMMMMMMD.",
     ".DLMLMLMLMD.",
     "..DDDDDDDD..",
+  ],
+  chart: [
+    "D...........",
+    "D........RR.",
+    "D.......R...",
+    "D...MM..R...",
+    "D..M..M.R...",
+    "D.M....MR...",
+    "DM..........",
+    "DDDDDDDDDDDD",
   ],
   "arrow-up": [
     "...DD...",
@@ -135,8 +140,6 @@ export function PixelIcon({ name, size = 22, className = "" }) {
   );
 }
 
-// ---------- Window ----------
-
 export function Window({
   title,
   icon,
@@ -160,11 +163,9 @@ export function Window({
   );
 }
 
-// ---------- Loading bar ----------
-
-export function PixelLoader({ label }) {
+export function PixelLoader({ label, className = "" }) {
   return (
-    <div className="pixel-loader" role="status">
+    <div className={`pixel-loader ${className}`} role="status">
       <span className="pixel-loader-label">{label}</span>
       <span className="pixel-loader-bar" aria-hidden="true">
         {Array.from({ length: 12 }, (_, i) => (
@@ -175,8 +176,6 @@ export function PixelLoader({ label }) {
   );
 }
 
-// ---------- Menu bar ----------
-
 function useClock() {
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
@@ -186,7 +185,6 @@ function useClock() {
   return now;
 }
 
-// items: [{ id, label, active, onClick }]
 export function MenuBar({ items }) {
   const now = useClock();
   return (
@@ -218,8 +216,6 @@ export function MenuBar({ items }) {
   );
 }
 
-// ---------- Background sparkles ----------
-
 const SPARKLES = [
   { top: "12%", left: "4%", size: 18, delay: 0 },
   { top: "28%", left: "94%", size: 14, delay: 1.2 },
@@ -244,10 +240,6 @@ export function Sparkles() {
     </div>
   );
 }
-
-// ---------- Click sparkles ----------
-// A tiny puff of pink pixels when you click a button or link. Skipped for
-// people who've asked their OS for reduced motion.
 
 const BURST_ANGLES = [45, 135, 225, 315];
 

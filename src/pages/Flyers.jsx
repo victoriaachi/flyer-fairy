@@ -12,21 +12,22 @@ import "../styles/global.css";
 import axios from "axios";
 import SearchAll from "../components/SearchAll";
 import GroceryList from "../components/GroceryList";
+import PriceHistory from "../components/PriceHistory";
 import { API, toTitleCase } from "../lib/format";
 import { MenuBar, PixelIcon, PixelLoader, Window } from "../components/Retro";
 
 const STORES = ["No Frills", "T&T Supermarket", "FreshCo", "Loblaws", "Costco"];
 
-// How far down the page before the Back to Top button appears.
 const BACK_TO_TOP_AFTER_PX = 400;
 
 const VIEWS = [
   { id: "browse", label: "Browse a store" },
   { id: "search", label: "Search by item" },
   { id: "list", label: "Grocery list" },
+  { id: "history", label: "Price history" },
 ];
 
-// Canadian postal codes never use D, F, I, O, Q or U, and W/Z never start one.
+// canadian postal codes never use d f i o q or u
 const POSTAL_CODE_RE =
   /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i;
 
@@ -40,8 +41,6 @@ function mapsSearchUrl(store, postal) {
   )}`;
 }
 
-// One request per postal code for every store's nearest branch, shared by the
-// background prefetch and store clicks so nothing is looked up twice.
 const locationRequests = new Map();
 function fetchAllLocations(postal) {
   if (!locationRequests.has(postal)) {
@@ -66,11 +65,9 @@ function Flyers() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [showBackToTop, setShowBackToTop] = useState(false);
-  // Result of the server check for a postal code: "unknown" | "valid".
   const [postalCheck, setPostalCheck] = useState({ postal: null });
-  // Background lookup of every store's nearest branch for a postal code.
   const [nearbyResult, setNearbyResult] = useState({ postal: null });
-  // Ignore responses from an older click if the user picked another store.
+  // so an old response cant overwrite a store you clicked after
   const requestId = useRef(0);
   const [postalCode, setPostalCode] = useState(() => {
     try {
@@ -93,7 +90,6 @@ function Flyers() {
   const postal = normalizePostal(postalCode);
   const postalCodeValid = POSTAL_CODE_RE.test(postalCode.trim());
 
-  // "incomplete" | "invalid" | "checking" | "unknown" | "valid"
   const formatProblem =
     postal.length < 6
       ? "incomplete"
@@ -112,14 +108,10 @@ function Flyers() {
           stores: {},
         };
 
-  // When the postal code changes while a store is open, reload it for the
-  // new area. An effect event so it always sees the latest store.
   const reloadOpenStore = useEffectEvent(() => {
     if (storeName) handleClick(storeName);
   });
 
-  // As soon as a full postal code is typed: check it's real, then start
-  // finding every store's nearest branch in the background.
   useEffect(() => {
     if (postal.length < 6 || !POSTAL_CODE_RE.test(postal)) return;
 
@@ -136,7 +128,6 @@ function Flyers() {
           setPostalCheck({ postal, status: "unknown" });
           return;
         }
-        // Backend unreachable: don't block the user over it.
       }
       if (cancelled) return;
       setPostalCheck({ postal, status: "valid", place });
@@ -172,7 +163,6 @@ function Flyers() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // While searching, keep only matching items and drop empty categories.
   const query = search.trim().toLowerCase();
   const visibleCategories = useMemo(() => {
     const entries = Object.entries(items);
@@ -195,12 +185,11 @@ function Flyers() {
     try {
       localStorage.setItem("postalCode", value.toUpperCase());
     } catch {
-      // storage unavailable; ignore
+      // storage is blocked, its fine
     }
   }
 
   function formatDate(iso) {
-    // Use the date part only so the day doesn't shift with the viewer's timezone
     const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
     return new Date(y, m - 1, d).toLocaleDateString("en-CA", {
       weekday: "short",
@@ -252,8 +241,6 @@ function Flyers() {
     }
   }
 
-  // Usually instant: the background lookup started when the postal code was
-  // entered, so this just waits for (or reuses) that same request.
   async function loadLocation(store, postal, thisRequest) {
     setLocation(null);
     setLocationLoading(true);
@@ -309,56 +296,35 @@ function Flyers() {
         <p className="page-subtitle">Grocery deals near you!</p>
       </header>
 
-      <Window
-        title="find_stores.exe"
-        icon="magnifier"
-        className="controls-card"
-      >
-        <div className="postal-row">
-          <label htmlFor="postalCode">Postal code</label>
-          <input
-            id="postalCode"
-            className={`postal-input ${
-              postalStatus === "invalid" || postalStatus === "unknown"
-                ? "invalid"
-                : ""
-            }`}
-            aria-describedby="postalStatus"
-            value={postalCode}
-            maxLength={7}
-            placeholder="L3R 3G7"
-            onChange={(e) => handlePostalChange(e.target.value)}
-          />
-        </div>
-        <p
+      <div className="location-bar">
+        <label htmlFor="postalCode" className="location-label">
+          Shopping near
+        </label>
+        <input
+          id="postalCode"
+          className={`postal-input ${
+            postalStatus === "invalid" || postalStatus === "unknown"
+              ? "invalid"
+              : ""
+          }`}
+          aria-describedby="postalStatus"
+          value={postalCode}
+          maxLength={7}
+          placeholder="L3R 3G7"
+          onChange={(e) => handlePostalChange(e.target.value)}
+        />
+        <div
           id="postalStatus"
-          className={`postal-status ${postalStatus}`}
+          className={`location-status ${postalStatus}`}
           aria-live="polite"
         >
-          {postalMessage || "\u00a0"}
-        </p>
-        {view === "browse" && (
-          <div className="store-chips">
-            {STORES.map((store) => {
-              const nearest = nearby.stores[store];
-              return (
-                <button
-                  key={store}
-                  className={`store-chip ${storeName === store ? "active" : ""}`}
-                  onClick={() => handleClick(store)}
-                >
-                  {store}
-                  {nearest?.found && nearest.distanceKm != null && (
-                    <span className="chip-distance">
-                      {nearest.distanceKm} km
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </Window>
+          {postalStatus === "valid" && nearby.status === "loading" ? (
+            <PixelLoader className="compact inline" label={postalMessage} />
+          ) : (
+            postalMessage
+          )}
+        </div>
+      </div>
 
       <div className="view-panel" key={view}>
         {view === "search" && (
@@ -377,9 +343,37 @@ function Flyers() {
             nearbyStores={nearby.stores}
           />
         )}
+        {view === "history" && (
+          <PriceHistory postal={postal} ready={postalStatus === "valid"} />
+        )}
 
         {view === "browse" && (
           <>
+            <Window
+              title="pick_a_store.exe"
+              icon="folder"
+              className="store-picker"
+            >
+              <div className="store-chips">
+                {STORES.map((store) => {
+                  const nearest = nearby.stores[store];
+                  return (
+                    <button
+                      key={store}
+                      className={`store-chip ${storeName === store ? "active" : ""}`}
+                      onClick={() => handleClick(store)}
+                    >
+                      {store}
+                      {nearest?.found && nearest.distanceKm != null && (
+                        <span className="chip-distance">
+                          {nearest.distanceKm} km
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </Window>
             {!loaded && <PixelLoader label="Loading flyers" />}
             {loaded && error && <p className="flyer-error">{error}</p>}
 
@@ -413,9 +407,10 @@ function Flyers() {
 
                         <div className="flyer-location">
                           {locationLoading && (
-                            <span className="flyer-meta shimmer">
-                              Looking up the closest {storeName}
-                            </span>
+                            <PixelLoader
+                              className="compact"
+                              label={`Looking up the closest ${storeName}`}
+                            />
                           )}
                           {!locationLoading && location?.found && (
                             <>
@@ -510,7 +505,6 @@ function Flyers() {
                   >
                     <div className="categories">
                       {visibleCategories.map(([category, categoryItems]) => {
-                        // Searching opens every category that has matches.
                         const isOpen =
                           query !== "" || openCategory === category;
                         return (
